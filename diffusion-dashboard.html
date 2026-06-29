@@ -6,26 +6,43 @@
 <title>Diffusion of Innovations Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',system-ui,sans-serif;background:#f7f6f3;color:#0b0b0b;min-height:100vh;display:flex;flex-direction:column;}
+body{font-family:'Inter',system-ui,sans-serif;background:#f7f6f3;color:#0b0b0b;min-height:100vh;}
 
-/* Layout */
 .app{display:flex;min-height:100vh;}
-.sidebar{width:300px;min-width:300px;background:#ffffff;border-right:0.5px solid #e1e0d9;display:flex;flex-direction:column;padding:24px 20px;gap:20px;overflow-y:auto;transition:width 0.25s ease,min-width 0.25s ease,padding 0.25s ease,opacity 0.2s ease;}
-.sidebar.collapsed{width:0;min-width:0;padding:0;opacity:0;overflow:hidden;border-right:none;}
-.main{flex:1;padding:32px 36px;overflow-y:auto;display:flex;flex-direction:column;gap:24px;transition:padding 0.25s ease;}
-.toggle-sidebar-btn{position:fixed;top:16px;left:16px;z-index:100;background:#ffffff;border:0.5px solid #d3d1c7;border-radius:6px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:#52514e;transition:background 0.15s,left 0.25s ease;box-shadow:0 1px 4px rgba(0,0,0,0.06);}
-.toggle-sidebar-btn:hover{background:#f7f6f3;}
-.toggle-sidebar-btn.open{left:308px;}
-.main-inner{margin-left:0;transition:margin-left 0.25s ease;}
 
-/* Sidebar */
+/* Main */
+.main{flex:1;padding:32px 36px;overflow-y:auto;display:flex;flex-direction:column;gap:24px;min-width:0;}
+
+/* Sidebar — slides in from the right */
+.sidebar{
+  width:320px;min-width:320px;
+  background:#ffffff;border-left:0.5px solid #e1e0d9;
+  display:flex;flex-direction:column;gap:20px;
+  padding:24px 20px;overflow-y:auto;
+  transition:width 0.25s ease,min-width 0.25s ease,padding 0.25s ease,opacity 0.2s ease;
+}
+.sidebar.collapsed{width:0;min-width:0;padding:0;opacity:0;overflow:hidden;border-left:none;}
+
+/* Hamburger — fixed top right */
+.toggle-btn{
+  position:fixed;top:16px;right:16px;z-index:200;
+  background:#ffffff;border:0.5px solid #d3d1c7;border-radius:6px;
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:16px;color:#52514e;
+  box-shadow:0 1px 4px rgba(0,0,0,0.06);
+  transition:background 0.15s;
+}
+.toggle-btn:hover{background:#f7f6f3;}
+
+/* Sidebar internals */
 .sidebar-title{font-size:15px;font-weight:500;color:#0b0b0b;}
 .sidebar-sub{font-size:12px;color:#898781;margin-top:3px;line-height:1.5;}
 .field-group{display:flex;flex-direction:column;gap:6px;}
 .field-label{font-size:12px;color:#52514e;font-weight:500;}
-.field-hint{font-size:11px;color:#b4b2a9;}
+.field-hint{font-size:11px;color:#b4b2a9;line-height:1.5;}
 input[type=text],input[type=number]{
   width:100%;padding:8px 10px;border:0.5px solid #d3d1c7;border-radius:6px;
   font-size:13px;font-family:inherit;color:#0b0b0b;background:#ffffff;
@@ -33,12 +50,11 @@ input[type=text],input[type=number]{
 }
 input[type=text]:focus,input[type=number]:focus{border-color:#2a78d6;box-shadow:0 0 0 3px rgba(42,120,214,0.1);}
 input::placeholder{color:#b4b2a9;}
-
-.divider{height:0.5px;background:#e1e0d9;}
+.divider{height:0.5px;background:#e1e0d9;flex-shrink:0;}
 
 /* Metric rows */
-.metrics-section{display:flex;flex-direction:column;gap:12px;}
-.metric-row{background:#f7f6f3;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;position:relative;}
+.metrics-section{display:flex;flex-direction:column;gap:10px;}
+.metric-row{background:#f7f6f3;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;}
 .metric-row-header{display:flex;align-items:center;gap:8px;}
 .metric-color-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 .metric-row-num{font-size:11px;color:#b4b2a9;font-weight:500;}
@@ -48,15 +64,17 @@ input::placeholder{color:#b4b2a9;}
 .toggle-switch input{opacity:0;width:0;height:0;}
 .toggle-slider{position:absolute;inset:0;background:#d3d1c7;border-radius:9px;cursor:pointer;transition:background 0.2s;}
 .toggle-slider::before{content:'';position:absolute;width:14px;height:14px;left:2px;top:2px;background:#fff;border-radius:50%;transition:transform 0.2s;}
-.toggle-switch input:checked + .toggle-slider{background:var(--metric-color,#2a78d6);}
-.toggle-switch input:checked + .toggle-slider::before{transform:translateX(14px);}
+.toggle-switch input:checked+.toggle-slider{background:var(--mc,#2a78d6);}
+.toggle-switch input:checked+.toggle-slider::before{transform:translateX(14px);}
 .toggle-label{font-size:12px;color:#52514e;}
 
-.btn-reset{width:100%;padding:9px;border:0.5px solid #d3d1c7;border-radius:6px;background:#fff;font-family:inherit;font-size:13px;color:#52514e;cursor:pointer;transition:background 0.15s,border-color 0.15s;}
-.btn-reset:hover{background:#f7f6f3;border-color:#b4b2a9;}
+.btn{width:100%;padding:9px;border:0.5px solid #d3d1c7;border-radius:6px;background:#fff;font-family:inherit;font-size:13px;color:#52514e;cursor:pointer;transition:background 0.15s,border-color 0.15s;text-align:center;}
+.btn:hover{background:#f7f6f3;border-color:#b4b2a9;}
+.btn-primary{background:#0b0b0b;color:#fff;border-color:#0b0b0b;}
+.btn-primary:hover{background:#2c2c2a;border-color:#2c2c2a;}
 
-/* Main content */
-.page-header{}
+/* Page header */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;padding-right:48px;}
 .page-title{font-size:20px;font-weight:500;color:#0b0b0b;}
 .page-sub{font-size:13px;color:#898781;margin-top:4px;}
 
@@ -69,20 +87,39 @@ input::placeholder{color:#b4b2a9;}
 .stat-card-sub{font-size:11px;color:#b4b2a9;margin-top:3px;}
 .seg-badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;margin-top:6px;font-weight:500;}
 
-/* Chart */
+/* Chart cards */
 .chart-card{background:#ffffff;border:0.5px solid #e1e0d9;border-radius:10px;padding:24px;}
-.chart-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;}
-.chart-title{font-size:14px;font-weight:500;color:#0b0b0b;}
+.chart-title{font-size:14px;font-weight:500;color:#0b0b0b;margin-bottom:2px;}
 .chart-sub{font-size:12px;color:#898781;}
-.chart-wrap{position:relative;height:360px;margin-top:20px;}
+.chart-wrap{position:relative;margin-top:20px;}
+.chart-wrap canvas{width:100%!important;}
 .tooltip-box{position:absolute;background:#ffffff;border:0.5px solid #d3d1c7;border-radius:8px;padding:10px 14px;font-size:12px;color:#0b0b0b;pointer-events:none;white-space:nowrap;box-shadow:0 2px 12px rgba(0,0,0,0.08);transition:opacity 0.1s;z-index:10;line-height:1.75;}
-
-.legend-row{display:flex;gap:18px;margin-top:12px;flex-wrap:wrap;}
+.legend-row{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap;}
 .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#898781;}
 .legend-line{width:22px;height:2px;border-radius:2px;}
-.legend-dash{width:22px;border-top:2px dashed #898781;}
+.legend-dash{width:22px;border-top:2px dashed #b4b2a9;}
 
-/* Rogers info */
+/* Upload area */
+.upload-section{display:flex;flex-direction:column;gap:16px;}
+.upload-block{border:0.5px dashed #d3d1c7;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:border-color 0.15s,background 0.15s;position:relative;}
+.upload-block:hover{border-color:#2a78d6;background:#f0f6ff;}
+.upload-block.has-file{border-style:solid;border-color:#1baf7a;background:#f0fbf6;}
+.upload-block input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-icon{font-size:18px;color:#b4b2a9;}
+.upload-label{font-size:13px;font-weight:500;color:#0b0b0b;}
+.upload-hint{font-size:11px;color:#898781;line-height:1.5;}
+.upload-status{font-size:11px;color:#1baf7a;font-weight:500;margin-top:2px;}
+.upload-error{font-size:11px;color:#e34948;font-weight:500;margin-top:2px;}
+
+/* Column mapper */
+.mapper{background:#f7f6f3;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;}
+.mapper-title{font-size:12px;font-weight:500;color:#0b0b0b;}
+.mapper-row{display:flex;flex-direction:column;gap:4px;}
+.mapper-label{font-size:11px;color:#52514e;}
+select{width:100%;padding:7px 10px;border:0.5px solid #d3d1c7;border-radius:6px;font-size:12px;font-family:inherit;color:#0b0b0b;background:#ffffff;outline:none;}
+select:focus{border-color:#2a78d6;}
+
+/* Rogers table */
 .rogers-card{background:#ffffff;border:0.5px solid #e1e0d9;border-radius:10px;padding:20px 24px;}
 .rogers-title{font-size:13px;font-weight:500;color:#0b0b0b;margin-bottom:12px;}
 .rogers-table{width:100%;border-collapse:collapse;font-size:12px;}
@@ -91,98 +128,159 @@ input::placeholder{color:#b4b2a9;}
 .rogers-table tr:last-child td{border-bottom:none;}
 .seg-bar{height:8px;border-radius:3px;}
 
+/* Rogers about */
+.about-card{background:#ffffff;border:0.5px solid #e1e0d9;border-radius:10px;overflow:hidden;}
+.about-header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+.about-header-title{font-size:13px;font-weight:500;color:#0b0b0b;}
+.about-chevron{font-size:12px;color:#898781;transition:transform 0.2s;}
+.about-chevron.open{transform:rotate(180deg);}
+.about-body{padding:0 20px 20px;display:none;flex-direction:column;gap:12px;}
+.about-body.open{display:flex;}
+.about-body p{font-size:13px;color:#52514e;line-height:1.65;}
+.about-body cite{font-size:11px;color:#b4b2a9;display:block;margin-top:4px;}
+
 @media(max-width:700px){
   .app{flex-direction:column;}
-  .sidebar{width:100%;min-width:unset;border-right:none;border-bottom:0.5px solid #e1e0d9;}
+  .sidebar{width:100%!important;min-width:unset!important;border-left:none;border-top:0.5px solid #e1e0d9;}
   .main{padding:20px 16px;}
+  .toggle-btn{display:none;}
 }
 </style>
 </head>
 <body>
+<button class="toggle-btn" id="toggleBtn" title="Toggle settings">&#9776;</button>
+
 <div class="app">
+<main class="main" id="mainArea">
 
-<!-- SIDEBAR TOGGLE -->
-<button class="toggle-sidebar-btn open" id="sidebarToggle" aria-label="Toggle sidebar" title="Toggle sidebar">&#9776;</button>
-
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div>
-    <div class="sidebar-title">Configuration</div>
-    <div class="sidebar-sub">Set your potential customer pool and up to 5 metrics to plot on the curve.</div>
-  </div>
-
-  <div class="field-group">
-    <div class="field-label">Potential customer pool</div>
-    <div class="field-hint">Total size of the market you could realistically reach</div>
-    <input type="number" id="poolInput" placeholder="e.g. 7500000" min="1">
-    <input type="text" id="poolLabel" placeholder="Label (e.g. Canadian sneaker market)" style="margin-top:4px;">
-  </div>
-
-  <div class="divider"></div>
-
-  <div>
-    <div class="field-label" style="margin-bottom:10px;">Metrics <span style="color:#b4b2a9;font-weight:400;">(up to 5)</span></div>
-    <div class="metrics-section" id="metricsSection"></div>
-  </div>
-
-  <div class="divider"></div>
-
-  <button class="btn-reset" id="resetBtn">Reset all</button>
-</aside>
-
-<!-- MAIN -->
-<main class="main">
   <div class="page-header">
-    <div class="page-title">Diffusion of innovations</div>
-    <div class="page-sub" id="pageSubtitle">Configure your potential customer pool and metrics in the sidebar</div>
+    <div>
+      <div class="page-title">Diffusion of innovations</div>
+      <div class="page-sub" id="pageSubtitle">Configure your potential customer pool in the settings panel</div>
+    </div>
   </div>
 
   <div class="stats-grid" id="statsGrid"></div>
 
   <div class="chart-card">
-    <div class="chart-header">
-      <div class="chart-title">Adoption curve</div>
-      <div class="chart-sub" id="chartSub"></div>
+    <div class="chart-title">Adoption curve &amp; blended CAC</div>
+    <div class="chart-sub">Cumulative adoption approximates rising CAC — as the unconverted pool shrinks, each new customer costs more to acquire</div>
+    <div class="chart-wrap" style="height:380px;">
+      <canvas id="doiCanvas" role="img" aria-label="Diffusion of innovations S-curve with blended CAC overlay"></canvas>
+      <div class="tooltip-box" id="doiTooltip" style="opacity:0;"></div>
     </div>
-    <div class="chart-sub" style="font-size:12px;color:#b4b2a9;margin-top:2px;">Where each metric sits on the Rogers diffusion curve</div>
-    <div class="chart-wrap">
-      <canvas id="doiCanvas" role="img" aria-label="Diffusion of innovations S-curve showing cumulative adoption by segment"></canvas>
-      <div class="tooltip-box" id="tooltip" style="opacity:0;"></div>
-    </div>
-    <div class="legend-row">
-      <div class="legend-item"><div class="legend-line" style="background:#b4b2a9;height:8px;border-radius:2px;width:16px;"></div>Population distribution</div>
-      <div class="legend-item"><div class="legend-line" style="background:#2a78d6;"></div>Cumulative adoption</div>
-      <div class="legend-item"><div class="legend-dash"></div>Your metrics</div>
+    <div class="legend-row" id="doiLegend"></div>
+  </div>
+
+  <div class="chart-card" id="cacChartCard" style="display:none;">
+    <div class="chart-title">Blended CAC over time</div>
+    <div class="chart-sub">Total ad spend ÷ new customers, aggregated monthly</div>
+    <div class="chart-wrap" style="height:260px;">
+      <canvas id="cacCanvas" role="img" aria-label="Blended CAC over time"></canvas>
     </div>
   </div>
 
   <div class="rogers-card">
     <div class="rogers-title">Rogers' adoption segments</div>
     <table class="rogers-table">
-      <thead><tr><th>Segment</th><th>Share</th><th>Cumulative</th><th style="width:40%"></th></tr></thead>
+      <thead><tr><th>Segment</th><th>Share</th><th>Cumulative</th><th style="width:35%"></th></tr></thead>
       <tbody id="rogersTable"></tbody>
     </table>
   </div>
+
+  <div class="about-card">
+    <div class="about-header" id="aboutHeader">
+      <span class="about-header-title">About the Diffusion of Innovations framework</span>
+      <span class="about-chevron" id="aboutChevron">&#9660;</span>
+    </div>
+    <div class="about-body" id="aboutBody">
+      <p>The Diffusion of Innovations is a theory developed by sociologist Everett Rogers in 1962 to explain how, why, and at what rate new ideas and technologies spread through populations. Rogers identified five adopter categories — Innovators, Early Adopters, Early Majority, Late Majority, and Laggards — each representing a distinct segment of the population based on their willingness to adopt something new.</p>
+      <p>The S-shaped cumulative adoption curve reflects a consistent empirical pattern: adoption starts slowly among risk-tolerant innovators, accelerates as social proof builds through the majority, then slows as only the most resistant laggards remain. This curve has been replicated across thousands of studies spanning agriculture, technology, medicine, and consumer products.</p>
+      <p>For marketing purposes, the curve is useful because it maps directly to customer acquisition cost. Early in a brand's life, the easiest-to-convert customers adopt first — CAC is low. As the addressable pool matures, the remaining unconverted population requires more exposure, more proof, and more spend to convert — CAC rises structurally, independent of campaign performance.</p>
+      <cite>Rogers, E.M. (1962). Diffusion of Innovations. Free Press of Glencoe. Now in its 5th edition (2003).</cite>
+    </div>
+  </div>
+
 </main>
+
+<aside class="sidebar" id="sidebar">
+  <div>
+    <div class="sidebar-title">Configuration</div>
+    <div class="sidebar-sub">Set your potential customer pool, adoption metrics, and optionally upload data to calculate blended CAC.</div>
+  </div>
+
+  <div class="field-group">
+    <div class="field-label">Potential customer pool size</div>
+    <div class="field-hint">Total number of people who could realistically become customers</div>
+    <input type="number" id="poolInput" placeholder="e.g. 5000000" min="1">
+    <input type="text" id="poolLabelInput" placeholder="Pool description (optional)" style="margin-top:4px;">
+  </div>
+
+  <div class="divider"></div>
+
+  <div>
+    <div class="field-label" style="margin-bottom:10px;">Adoption metrics <span style="color:#b4b2a9;font-weight:400;">(up to 5)</span></div>
+    <div class="metrics-section" id="metricsSection"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="upload-section">
+    <div>
+      <div class="field-label">CAC data upload</div>
+      <div class="field-hint" style="margin-top:4px;">Upload one Shopify new customers file and one or more ad spend files. The dashboard will calculate blended CAC automatically. All files must have a date/month column. Aggregated to monthly.</div>
+    </div>
+
+    <div class="upload-block" id="shopifyUploadBlock">
+      <input type="file" id="shopifyFile" accept=".csv" title="">
+      <div class="upload-icon">&#8593;</div>
+      <div class="upload-label">Shopify — new customers</div>
+      <div class="upload-hint">CSV with date and new customer count columns</div>
+      <div class="upload-status" id="shopifyStatus"></div>
+      <div class="upload-error" id="shopifyError"></div>
+    </div>
+
+    <div id="shopifyMapper" style="display:none;"></div>
+
+    <div id="spendUploads">
+      <div class="upload-block" id="spendUploadBlock0">
+        <input type="file" class="spend-file" accept=".csv" data-idx="0" title="">
+        <div class="upload-icon">&#8593;</div>
+        <div class="upload-label">Ad spend file 1</div>
+        <div class="upload-hint">Meta, Google, TikTok, etc. — CSV with date and spend columns</div>
+        <div class="upload-status" id="spendStatus0"></div>
+        <div class="upload-error" id="spendError0"></div>
+      </div>
+      <div id="spendMapper0" style="display:none;margin-top:8px;"></div>
+    </div>
+
+    <button class="btn" id="addSpendBtn">+ Add another spend file</button>
+    <button class="btn btn-primary" id="calcCacBtn" style="display:none;">Calculate blended CAC</button>
+    <button class="btn" id="clearCacBtn" style="display:none;">Clear CAC data</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <button class="btn" id="resetBtn">Reset all</button>
+</aside>
 </div>
 
 <script>
-const COLORS = ['#e34948','#2a78d6','#1baf7a','#eda100','#4a3aa7'];
-const SEG_STYLES = {
-  'Innovators':     { bg:'#f1efe8', text:'#5f5e5a' },
-  'Early Adopters': { bg:'#e6f1fb', text:'#185fa5' },
-  'Early Majority': { bg:'#e1f5ee', text:'#0f6e56' },
-  'Late Majority':  { bg:'#faeeda', text:'#854f0b' },
-  'Laggards':       { bg:'#fcebeb', text:'#a32d2d' },
+const COLORS=['#e34948','#2a78d6','#1baf7a','#eda100','#4a3aa7'];
+const SEG_STYLES={
+  'Innovators':{bg:'#f1efe8',text:'#5f5e5a'},
+  'Early Adopters':{bg:'#e6f1fb',text:'#185fa5'},
+  'Early Majority':{bg:'#e1f5ee',text:'#0f6e56'},
+  'Late Majority':{bg:'#faeeda',text:'#854f0b'},
+  'Laggards':{bg:'#fcebeb',text:'#a32d2d'},
 };
-const SEGMENTS = [
-  { label:'Innovators',     pct:2.5,  cumEnd:2.5,  color:'#d3d1c7' },
-  { label:'Early Adopters', pct:13.5, cumEnd:16,   color:'#b4b2a9' },
-  { label:'Early Majority', pct:34,   cumEnd:50,   color:'#888780' },
-  { label:'Late Majority',  pct:34,   cumEnd:84,   color:'#5f5e5a' },
-  { label:'Laggards',       pct:16,   cumEnd:100,  color:'#444441' },
+const SEGMENTS=[
+  {label:'Innovators',pct:2.5,cumEnd:2.5,color:'#d3d1c7'},
+  {label:'Early Adopters',pct:13.5,cumEnd:16,color:'#b4b2a9'},
+  {label:'Early Majority',pct:34,cumEnd:50,color:'#888780'},
+  {label:'Late Majority',pct:34,cumEnd:84,color:'#5f5e5a'},
+  {label:'Laggards',pct:16,cumEnd:100,color:'#444441'},
 ];
-
 const BB_F=[0,0.07,0.23,0.57,0.91,1];
 const BB_C=[0,2.5,16,50,84,100];
 
@@ -204,97 +302,303 @@ function cumForFrac(f){
   }
   return f>=1?100:0;
 }
-function segFor(p){
-  for(const s of SEGMENTS){if(p<=s.cumEnd)return s.label;}
-  return 'Laggards';
-}
+function segFor(p){for(const s of SEGMENTS){if(p<=s.cumEnd)return s.label;}return 'Laggards';}
 function fmt(n){
   if(!n||isNaN(n))return '—';
-  if(n>=1000000)return (n/1000000).toFixed(1).replace(/\.0$/,'')+'M';
+  if(n>=1000000)return(n/1000000).toFixed(1).replace(/\.0$/,'')+'M';
   if(n>=1000)return Math.round(n/1000)+'K';
   return Number(n).toLocaleString();
 }
+function fmtCAC(n){
+  if(!n||isNaN(n))return '—';
+  return '$'+n.toFixed(2);
+}
+function parseMonth(str){
+  if(!str)return null;
+  const s=String(str).trim();
+  const d=new Date(s);
+  if(!isNaN(d))return d.toISOString().slice(0,7);
+  const m=s.match(/(\d{4})[\/\-](\d{1,2})/);
+  if(m)return m[1]+'-'+String(m[2]).padStart(2,'0');
+  return null;
+}
 
 // State
-const DEFAULT_STATE = {
-  pool: '',
-  poolLabel: '',
-  metrics: [
-    {name:'',value:'',active:true},
-    {name:'',value:'',active:true},
-    {name:'',value:'',active:true},
-    {name:'',value:'',active:true},
-    {name:'',value:'',active:true},
+const DEFAULT={
+  pool:'',poolLabel:'',
+  metrics:[
+    {name:'',value:'',active:true},{name:'',value:'',active:true},
+    {name:'',value:'',active:true},{name:'',value:'',active:true},{name:'',value:'',active:true}
   ]
 };
-
 function loadState(){
-  try{
-    const s=localStorage.getItem('doi_dashboard');
-    if(s)return JSON.parse(s);
-  }catch(e){}
-  return JSON.parse(JSON.stringify(DEFAULT_STATE));
+  try{const s=localStorage.getItem('doi_v2');if(s)return JSON.parse(s);}catch(e){}
+  return JSON.parse(JSON.stringify(DEFAULT));
 }
-function saveState(){
-  localStorage.setItem('doi_dashboard',JSON.stringify(state));
-}
+function saveState(){localStorage.setItem('doi_v2',JSON.stringify(state));}
 let state=loadState();
 
-// Build sidebar
+// CAC data (not persisted — upload each session)
+let shopifyData=null; // {col_date, col_customers, rows}
+let spendFiles=[{data:null}]; // array of {col_date, col_spend, rows}
+let cacSeries=null; // [{month, cac}]
+
+// Sidebar toggle
+const sidebar=document.getElementById('sidebar');
+const toggleBtn=document.getElementById('toggleBtn');
+let sidebarOpen=localStorage.getItem('doi_sidebar2')!=='closed';
+function applySidebar(){
+  if(sidebarOpen){sidebar.classList.remove('collapsed');toggleBtn.title='Hide settings';}
+  else{sidebar.classList.add('collapsed');toggleBtn.title='Show settings';}
+  setTimeout(()=>{if(doiChart)doiChart.resize();if(cacChart)cacChart.resize();},270);
+}
+toggleBtn.addEventListener('click',()=>{
+  sidebarOpen=!sidebarOpen;
+  localStorage.setItem('doi_sidebar2',sidebarOpen?'open':'closed');
+  applySidebar();
+});
+applySidebar();
+
+// About accordion
+document.getElementById('aboutHeader').addEventListener('click',()=>{
+  const body=document.getElementById('aboutBody');
+  const chev=document.getElementById('aboutChevron');
+  body.classList.toggle('open');
+  chev.classList.toggle('open');
+});
+
+// Sidebar inputs
 function buildSidebar(){
-  const poolInput=document.getElementById('poolInput');
-  const poolLabel=document.getElementById('poolLabel');
-  poolInput.value=state.pool;
-  poolLabel.value=state.poolLabel;
-  poolInput.addEventListener('input',()=>{state.pool=poolInput.value;saveState();render();});
-  poolLabel.addEventListener('input',()=>{state.poolLabel=poolLabel.value;saveState();render();});
+  document.getElementById('poolInput').value=state.pool;
+  document.getElementById('poolLabelInput').value=state.poolLabel;
+  document.getElementById('poolInput').oninput=e=>{state.pool=e.target.value;saveState();render();};
+  document.getElementById('poolLabelInput').oninput=e=>{state.poolLabel=e.target.value;saveState();render();};
 
   const sec=document.getElementById('metricsSection');
   sec.innerHTML='';
   state.metrics.forEach((m,i)=>{
     const color=COLORS[i];
-    const row=document.createElement('div');
-    row.className='metric-row';
-    row.innerHTML=`
+    const div=document.createElement('div');
+    div.className='metric-row';
+    div.innerHTML=`
       <div class="metric-row-header">
         <div class="metric-color-dot" style="background:${color}"></div>
         <div class="metric-row-num">Metric ${i+1}</div>
       </div>
       <div class="metric-inputs">
-        <input type="text" placeholder="Name (e.g. Klaviyo profiles)" value="${m.name||''}" data-idx="${i}" data-field="name">
-        <input type="number" placeholder="Value (e.g. 2500000)" value="${m.value||''}" min="0" data-idx="${i}" data-field="value">
+        <input type="text" placeholder="Name" value="${m.name||''}" data-i="${i}" data-f="name">
+        <input type="number" placeholder="Count" value="${m.value||''}" min="0" data-i="${i}" data-f="value">
       </div>
       <div class="metric-toggle-row">
-        <label class="toggle-switch" style="--metric-color:${color}">
-          <input type="checkbox" ${m.active?'checked':''} data-idx="${i}" data-field="active">
+        <label class="toggle-switch" style="--mc:${color}">
+          <input type="checkbox" ${m.active?'checked':''} data-i="${i}" data-f="active">
           <span class="toggle-slider"></span>
         </label>
         <span class="toggle-label">Show on chart</span>
-      </div>
-    `;
-    sec.appendChild(row);
+      </div>`;
+    sec.appendChild(div);
   });
-
   sec.querySelectorAll('input').forEach(inp=>{
-    inp.addEventListener('input',()=>{
-      const idx=+inp.dataset.idx;
-      const field=inp.dataset.field;
-      if(field==='active')state.metrics[idx].active=inp.checked;
-      else state.metrics[idx][field]=inp.value;
+    inp.oninput=()=>{
+      const i=+inp.dataset.i,f=inp.dataset.f;
+      state.metrics[i][f]=f==='active'?inp.checked:inp.value;
       saveState();render();
-    });
+    };
   });
-
   document.getElementById('resetBtn').onclick=()=>{
-    if(!confirm('Reset all inputs?'))return;
-    state=JSON.parse(JSON.stringify(DEFAULT_STATE));
-    saveState();
-    buildSidebar();
-    render();
+    if(!confirm('Reset all configuration?'))return;
+    state=JSON.parse(JSON.stringify(DEFAULT));
+    saveState();buildSidebar();render();
   };
 }
 
-// Chart
+// ============ CSV UPLOAD & MAPPING ============
+function detectColumns(rows){
+  if(!rows||!rows.length)return[];
+  return Object.keys(rows[0]);
+}
+
+function guessDateCol(cols){
+  const kw=['date','month','day','period','week','time'];
+  for(const c of cols){if(kw.some(k=>c.toLowerCase().includes(k)))return c;}
+  return cols[0]||'';
+}
+function guessCustomerCol(cols){
+  const kw=['new','customer','first','buyer'];
+  for(const c of cols){if(kw.some(k=>c.toLowerCase().includes(k)))return c;}
+  return cols[1]||'';
+}
+function guessSpendCol(cols){
+  const kw=['spend','cost','amount','budget','paid'];
+  for(const c of cols){if(kw.some(k=>c.toLowerCase().includes(k)))return c;}
+  return cols[1]||'';
+}
+
+function buildMapper(containerId,cols,fields,onchange){
+  const el=document.getElementById(containerId);
+  el.style.display='block';
+  el.innerHTML='';
+  const div=document.createElement('div');
+  div.className='mapper';
+  let html=`<div class="mapper-title">Map columns</div>`;
+  fields.forEach(f=>{
+    const guess=f.guess(cols);
+    html+=`<div class="mapper-row">
+      <div class="mapper-label">${f.label}</div>
+      <select data-field="${f.key}">
+        ${cols.map(c=>`<option value="${c}"${c===guess?' selected':''}>${c}</option>`).join('')}
+      </select>
+    </div>`;
+  });
+  div.innerHTML=html;
+  div.querySelectorAll('select').forEach(s=>{s.onchange=onchange;});
+  el.appendChild(div);
+}
+
+function getMapperValues(containerId){
+  const el=document.getElementById(containerId);
+  const out={};
+  el.querySelectorAll('select').forEach(s=>{out[s.dataset.field]=s.value;});
+  return out;
+}
+
+// Shopify upload
+document.getElementById('shopifyFile').onchange=function(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  Papa.parse(file,{
+    header:true,skipEmptyLines:true,
+    complete(res){
+      const cols=detectColumns(res.data);
+      if(!cols.length){document.getElementById('shopifyError').textContent='Could not read file.';return;}
+      shopifyData={rows:res.data,cols};
+      document.getElementById('shopifyStatus').textContent=`✓ ${file.name} (${res.data.length} rows)`;
+      document.getElementById('shopifyUploadBlock').classList.add('has-file');
+      buildMapper('shopifyMapper',cols,[
+        {key:'date',label:'Date / month column',guess:guessDateCol},
+        {key:'customers',label:'New customers column',guess:guessCustomerCol},
+      ],checkCanCalculate);
+      checkCanCalculate();
+    },
+    error(){document.getElementById('shopifyError').textContent='Error reading file.';}
+  });
+};
+
+// Spend uploads
+let spendCount=1;
+function wireSpendFile(idx){
+  const input=document.querySelector(`.spend-file[data-idx="${idx}"]`);
+  if(!input)return;
+  input.onchange=function(e){
+    const file=e.target.files[0];
+    if(!file)return;
+    Papa.parse(file,{
+      header:true,skipEmptyLines:true,
+      complete(res){
+        const cols=detectColumns(res.data);
+        if(!cols.length){document.getElementById(`spendError${idx}`).textContent='Could not read file.';return;}
+        if(!spendFiles[idx])spendFiles[idx]={};
+        spendFiles[idx].rows=res.data;
+        spendFiles[idx].cols=cols;
+        document.getElementById(`spendStatus${idx}`).textContent=`✓ ${file.name} (${res.data.length} rows)`;
+        document.getElementById(`spendUploadBlock${idx}`).classList.add('has-file');
+        const mapId=`spendMapper${idx}`;
+        let mapEl=document.getElementById(mapId);
+        if(!mapEl){mapEl=document.createElement('div');mapEl.id=mapId;mapEl.style.marginTop='8px';document.getElementById(`spendUploadBlock${idx}`).after(mapEl);}
+        buildMapper(mapId,cols,[
+          {key:'date',label:'Date / month column',guess:guessDateCol},
+          {key:'spend',label:'Spend column',guess:guessSpendCol},
+        ],checkCanCalculate);
+        checkCanCalculate();
+      },
+      error(){document.getElementById(`spendError${idx}`).textContent='Error reading file.';}
+    });
+  };
+}
+wireSpendFile(0);
+
+document.getElementById('addSpendBtn').onclick=()=>{
+  if(spendCount>=5)return;
+  const idx=spendCount++;
+  spendFiles.push({});
+  const container=document.getElementById('spendUploads');
+  const block=document.createElement('div');
+  block.id=`spendUploadBlock${idx}`;
+  block.className='upload-block';
+  block.style.marginTop='10px';
+  block.innerHTML=`
+    <input type="file" class="spend-file" accept=".csv" data-idx="${idx}" title="">
+    <div class="upload-icon">&#8593;</div>
+    <div class="upload-label">Ad spend file ${idx+1}</div>
+    <div class="upload-hint">Meta, Google, TikTok, etc.</div>
+    <div class="upload-status" id="spendStatus${idx}"></div>
+    <div class="upload-error" id="spendError${idx}"></div>`;
+  container.appendChild(block);
+  wireSpendFile(idx);
+  if(spendCount>=5)document.getElementById('addSpendBtn').style.display='none';
+};
+
+function checkCanCalculate(){
+  const hasShopify=shopifyData&&shopifyData.rows;
+  const hasSpend=spendFiles.some(f=>f&&f.rows);
+  document.getElementById('calcCacBtn').style.display=(hasShopify&&hasSpend)?'block':'none';
+}
+
+document.getElementById('calcCacBtn').onclick=calculateCAC;
+document.getElementById('clearCacBtn').onclick=()=>{
+  cacSeries=null;
+  document.getElementById('cacChartCard').style.display='none';
+  document.getElementById('clearCacBtn').style.display='none';
+  if(cacChart){cacChart.destroy();cacChart=null;}
+  renderDoiChart();
+};
+
+function calculateCAC(){
+  // Get Shopify mapping
+  const sm=getMapperValues('shopifyMapper');
+  if(!sm.date||!sm.customers){alert('Please map the Shopify columns.');return;}
+
+  // Aggregate Shopify by month
+  const custByMonth={};
+  shopifyData.rows.forEach(r=>{
+    const mo=parseMonth(r[sm.date]);
+    if(!mo)return;
+    const n=parseFloat(String(r[sm.customers]).replace(/[,$]/g,''))||0;
+    custByMonth[mo]=(custByMonth[mo]||0)+n;
+  });
+
+  // Aggregate all spend files by month
+  const spendByMonth={};
+  spendFiles.forEach((sf,idx)=>{
+    if(!sf||!sf.rows)return;
+    const sm2=getMapperValues(`spendMapper${idx}`);
+    if(!sm2.date||!sm2.spend)return;
+    sf.rows.forEach(r=>{
+      const mo=parseMonth(r[sm2.date]);
+      if(!mo)return;
+      const s=parseFloat(String(r[sm2.spend]).replace(/[,$]/g,''))||0;
+      spendByMonth[mo]=(spendByMonth[mo]||0)+s;
+    });
+  });
+
+  // Build CAC series on months where we have both
+  const months=[...new Set([...Object.keys(custByMonth),...Object.keys(spendByMonth)])].sort();
+  cacSeries=months.map(mo=>{
+    const cust=custByMonth[mo]||0;
+    const spend=spendByMonth[mo]||0;
+    const cac=cust>0?spend/cust:null;
+    return{month:mo,cust,spend,cac};
+  }).filter(d=>d.cac!==null);
+
+  if(!cacSeries.length){alert('No overlapping months found between files.');cacSeries=null;return;}
+
+  document.getElementById('clearCacBtn').style.display='block';
+  document.getElementById('cacChartCard').style.display='block';
+  renderCacChart();
+  renderDoiChart();
+}
+
+// ============ DOI CHART ============
 const N=80;
 const xVals=Array.from({length:N+1},(_,i)=>i/N);
 const sCurve=xVals.map(cumForFrac);
@@ -315,13 +619,11 @@ const bellPlugin={
       const cx=x.getPixelForValue(b.cx);
       const hw=Math.abs(x.getPixelForValue(b.cx+b.halfW)-x.getPixelForValue(b.cx-b.halfW))/2;
       const yT=y2.getPixelForValue(b.h),yB=y2.getPixelForValue(0);
-      ctx.save();
-      ctx.fillStyle=b.color+'cc';
+      ctx.save();ctx.fillStyle=b.color+'cc';
       ctx.fillRect(cx-hw,yT,hw*2,yB-yT);
       if(yB-yT>22){
         ctx.fillStyle='rgba(255,255,255,0.85)';
-        ctx.font='500 11px Inter,system-ui';
-        ctx.textAlign='center';
+        ctx.font='500 11px Inter,system-ui';ctx.textAlign='center';
         ctx.fillText(b.pct+'%',cx,yT+14);
       }
       ctx.restore();
@@ -332,62 +634,53 @@ const bellPlugin={
     barData.forEach(b=>{
       const cx=x.getPixelForValue(b.cx);
       const yB=y2.getPixelForValue(0);
-      ctx.save();
-      ctx.fillStyle='#898781';
-      ctx.font='11px Inter,system-ui';
-      ctx.textAlign='center';
-      ctx.fillText(b.label,cx,yB+26);
-      ctx.restore();
+      ctx.save();ctx.fillStyle='#898781';
+      ctx.font='11px Inter,system-ui';ctx.textAlign='center';
+      ctx.fillText(b.label,cx,yB+26);ctx.restore();
     });
   }
 };
 
 function getActiveMetrics(){
   const pool=parseFloat(state.pool);
-  if(!pool||pool<=0)return [];
+  if(!pool||pool<=0)return[];
   return state.metrics.map((m,i)=>({
-    ...m,
-    idx:i,
-    color:COLORS[i],
+    ...m,idx:i,color:COLORS[i],
     numVal:parseFloat(m.value)||0,
     cumPct:m.value&&parseFloat(m.value)>0?Math.min((parseFloat(m.value)/pool)*100,100):0,
   })).filter(m=>m.name&&m.numVal>0&&m.active);
 }
 
-function buildDatasets(){
+let doiChart;
+function renderDoiChart(){
+  const canvas=document.getElementById('doiCanvas');
+  const metrics=getActiveMetrics();
+
   const ds=[{
-    label:'Cumulative adoption',
+    label:'Cumulative adoption ≈ rising CAC',
     data:xVals.map((x,i)=>({x,y:sCurve[i]})),
     borderColor:'#2a78d6',borderWidth:2,
     pointRadius:0,pointHoverRadius:0,tension:0,
     type:'line',yAxisID:'y',order:10,
   }];
-  getActiveMetrics().forEach(m=>{
+
+  metrics.forEach(m=>{
     const fx=fracForCum(m.cumPct);
     ds.push({
       label:m.name,
       data:[{x:fx,y:0},{x:fx,y:m.cumPct}],
-      borderColor:m.color,borderWidth:1.5,
-      borderDash:[4,3],
-      pointRadius:[0,7],
-      pointHoverRadius:[0,7],
+      borderColor:m.color,borderWidth:1.5,borderDash:[4,3],
+      pointRadius:[0,7],pointHoverRadius:[0,7],
       pointBackgroundColor:m.color,
       pointBorderColor:'#ffffff',pointBorderWidth:2.5,
       type:'line',yAxisID:'y',tension:0,order:5,
-      _metric:m,
     });
   });
-  return ds;
-}
 
-let chart;
-function buildChart(){
-  const canvas=document.getElementById('doiCanvas');
-  if(chart)chart.destroy();
-  chart=new Chart(canvas,{
-    type:'line',
-    plugins:[bellPlugin],
-    data:{datasets:buildDatasets()},
+  if(doiChart)doiChart.destroy();
+  doiChart=new Chart(canvas,{
+    type:'line',plugins:[bellPlugin],
+    data:{datasets:ds},
     options:{
       responsive:true,maintainAspectRatio:false,
       animation:{duration:250},
@@ -406,127 +699,156 @@ function buildChart(){
     },
   });
 
-  const tooltipEl=document.getElementById('tooltip');
-  canvas.addEventListener('mousemove',e=>{
+  // Tooltip
+  const tip=document.getElementById('doiTooltip');
+  canvas.onmousemove=e=>{
     const rect=canvas.getBoundingClientRect();
-    const mx=e.clientX-rect.left;
-    const my=e.clientY-rect.top;
-    const active=getActiveMetrics();
+    const mx=e.clientX-rect.left,my=e.clientY-rect.top;
     let closest=null,closestDist=Infinity;
-    active.forEach(m=>{
+    metrics.forEach(m=>{
       const fx=fracForCum(m.cumPct);
-      const px=chart.scales.x.getPixelForValue(fx);
+      const px=doiChart.scales.x.getPixelForValue(fx);
       const d=Math.abs(mx-px);
       if(d<closestDist&&d<50){closestDist=d;closest=m;}
     });
     if(closest){
       const pool=parseFloat(state.pool);
-      tooltipEl.style.opacity='1';
-      tooltipEl.innerHTML=`<strong style="color:${closest.color}">${closest.name}</strong><br>${fmt(closest.numVal)} of ${fmt(pool)} pool<br>${closest.cumPct.toFixed(1)}% cumulative adoption<br><span style="color:#898781">${segFor(closest.cumPct)}</span>`;
-      let tx=mx+14;
-      if(tx+210>rect.width)tx=mx-220;
-      tooltipEl.style.left=tx+'px';
-      tooltipEl.style.top=Math.max(0,my-30)+'px';
-    }else{tooltipEl.style.opacity='0';}
-  });
-  canvas.addEventListener('mouseleave',()=>{tooltipEl.style.opacity='0';});
+      tip.style.opacity='1';
+      tip.innerHTML=`<strong style="color:${closest.color}">${closest.name}</strong><br>${fmt(closest.numVal)} of ${fmt(pool)}<br>${closest.cumPct.toFixed(1)}% cumulative adoption<br><span style="color:#898781">${segFor(closest.cumPct)}</span>`;
+      let tx=mx+14;if(tx+210>rect.width)tx=mx-220;
+      tip.style.left=tx+'px';tip.style.top=Math.max(0,my-30)+'px';
+    }else tip.style.opacity='0';
+  };
+  canvas.onmouseleave=()=>tip.style.opacity='0';
+
+  // Legend
+  const leg=document.getElementById('doiLegend');
+  leg.innerHTML=`
+    <div class="legend-item"><div class="legend-line" style="background:#b4b2a9;height:8px;border-radius:2px;width:16px;"></div>Population distribution</div>
+    <div class="legend-item"><div class="legend-line" style="background:#2a78d6;"></div>Cumulative adoption ≈ rising CAC</div>
+    ${metrics.map(m=>`<div class="legend-item"><div class="legend-dash" style="border-top-color:${m.color};"></div>${m.name}</div>`).join('')}
+  `;
 }
 
+// ============ CAC CHART ============
+let cacChart;
+function renderCacChart(){
+  if(!cacSeries||!cacSeries.length)return;
+  const canvas=document.getElementById('cacCanvas');
+  if(cacChart)cacChart.destroy();
+
+  const labels=cacSeries.map(d=>d.month);
+  const cacs=cacSeries.map(d=>d.cac?+d.cac.toFixed(2):null);
+  const avgCAC=cacs.filter(Boolean).reduce((a,b)=>a+b,0)/cacs.filter(Boolean).length;
+
+  cacChart=new Chart(canvas,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        label:'Blended CAC',
+        data:cacs,
+        borderColor:'#e34948',borderWidth:2,
+        pointRadius:3,pointHoverRadius:5,
+        pointBackgroundColor:'#e34948',
+        tension:0.3,fill:false,
+        spanGaps:true,
+      },{
+        label:'Average',
+        data:cacs.map(()=>+avgCAC.toFixed(2)),
+        borderColor:'#b4b2a9',borderWidth:1,
+        borderDash:[4,3],pointRadius:0,
+        tension:0,fill:false,
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            label:ctx=>`${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}`
+          }
+        }
+      },
+      scales:{
+        x:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#898781',font:{size:11},maxTicksLimit:12}},
+        y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#898781',font:{size:11},callback:v=>'$'+v},
+          title:{display:true,text:'Blended CAC',color:'#898781',font:{size:11}}},
+      },
+      layout:{padding:{top:8}},
+    },
+  });
+}
+
+// ============ RENDER ============
 function render(){
   const pool=parseFloat(state.pool);
   const poolLabel=state.poolLabel||'potential customer pool';
-  const active=getActiveMetrics();
+  const metrics=getActiveMetrics();
 
-  // Subtitle
   document.getElementById('pageSubtitle').textContent=pool>0
     ?`${fmt(pool)} ${poolLabel}`
-    :'Configure your potential customer pool and metrics in the sidebar';
-
-  document.getElementById('chartSub').textContent=pool>0
-    ?`${fmt(pool)} ${poolLabel}`:'';
+    :'Configure your potential customer pool in the settings panel';
 
   // Stat cards
   const grid=document.getElementById('statsGrid');
   grid.innerHTML='';
   if(pool>0){
-    // Pool card
-    const poolCard=document.createElement('div');
-    poolCard.className='stat-card';
-    poolCard.innerHTML=`
-      <div class="stat-card-label">Potential customer pool</div>
-      <div class="stat-card-value">${fmt(pool)}</div>
-      <div class="stat-card-sub">${poolLabel}</div>
-    `;
-    grid.appendChild(poolCard);
+    const c=document.createElement('div');
+    c.className='stat-card';
+    c.innerHTML=`<div class="stat-card-label">Potential customer pool</div><div class="stat-card-value">${fmt(pool)}</div><div class="stat-card-sub">${poolLabel}</div>`;
+    grid.appendChild(c);
   }
-  active.forEach(m=>{
+  metrics.forEach(m=>{
     const seg=segFor(m.cumPct);
     const ss=SEG_STYLES[seg]||{bg:'#f1efe8',text:'#5f5e5a'};
-    const card=document.createElement('div');
-    card.className='stat-card';
-    card.innerHTML=`
+    const c=document.createElement('div');
+    c.className='stat-card';
+    c.innerHTML=`
       <div class="stat-card-label"><span class="stat-card-dot" style="background:${m.color}"></span>${m.name}</div>
       <div class="stat-card-value">${fmt(m.numVal)}</div>
       <div class="stat-card-sub">${m.cumPct.toFixed(1)}% of pool</div>
-      <span class="seg-badge" style="background:${ss.bg};color:${ss.text}">${seg}</span>
-    `;
-    grid.appendChild(card);
+      <span class="seg-badge" style="background:${ss.bg};color:${ss.text}">${seg}</span>`;
+    grid.appendChild(c);
   });
+
+  if(cacSeries&&cacSeries.length){
+    const latest=cacSeries[cacSeries.length-1];
+    const first=cacSeries[0];
+    const c=document.createElement('div');
+    c.className='stat-card';
+    const trend=latest.cac>first.cac?'↑':'↓';
+    const tColor=latest.cac>first.cac?'#e34948':'#1baf7a';
+    c.innerHTML=`
+      <div class="stat-card-label"><span class="stat-card-dot" style="background:#e34948"></span>Blended CAC (latest)</div>
+      <div class="stat-card-value">${fmtCAC(latest.cac)}</div>
+      <div class="stat-card-sub" style="color:${tColor}">${trend} from ${fmtCAC(first.cac)} (${first.month})</div>`;
+    grid.appendChild(c);
+  }
 
   // Rogers table
   const tbody=document.getElementById('rogersTable');
   tbody.innerHTML='';
   SEGMENTS.forEach(seg=>{
     const cumStart=seg.cumEnd-seg.pct;
-    const tr=document.createElement('tr');
     const ss=SEG_STYLES[seg.label]||{bg:'#f1efe8',text:'#5f5e5a'};
-    const myMetrics=active.filter(m=>segFor(m.cumPct)===seg.label);
+    const myMetrics=metrics.filter(m=>segFor(m.cumPct)===seg.label);
     const dots=myMetrics.map(m=>`<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${m.color};margin-right:3px;vertical-align:middle;"></span>`).join('');
+    const tr=document.createElement('tr');
     tr.innerHTML=`
       <td><span class="seg-badge" style="background:${ss.bg};color:${ss.text}">${seg.label}</span>${dots?'<span style="margin-left:6px;">'+dots+'</span>':''}</td>
       <td style="color:#0b0b0b;font-weight:500;">${seg.pct}%</td>
       <td style="color:#52514e;">${cumStart.toFixed(0)}–${seg.cumEnd}%</td>
-      <td><div class="seg-bar" style="background:${seg.color};width:${seg.pct*2.2}px;"></div></td>
-    `;
+      <td><div class="seg-bar" style="background:${seg.color};width:${seg.pct*2.2}px;"></div></td>`;
     tbody.appendChild(tr);
   });
 
-  // Chart
-  if(chart){
-    chart.data.datasets=buildDatasets();
-    chart.update('active');
-  }
+  renderDoiChart();
 }
 
 buildSidebar();
-buildChart();
 render();
-
-// Sidebar toggle
-const sidebar = document.querySelector('.sidebar');
-const toggleBtn = document.getElementById('sidebarToggle');
-let sidebarOpen = localStorage.getItem('doi_sidebar') !== 'closed';
-
-function applySidebar() {
-  if (sidebarOpen) {
-    sidebar.classList.remove('collapsed');
-    toggleBtn.classList.add('open');
-    toggleBtn.setAttribute('title','Hide sidebar');
-  } else {
-    sidebar.classList.add('collapsed');
-    toggleBtn.classList.remove('open');
-    toggleBtn.setAttribute('title','Show sidebar');
-  }
-  setTimeout(() => { if (chart) chart.resize(); }, 270);
-}
-
-toggleBtn.addEventListener('click', () => {
-  sidebarOpen = !sidebarOpen;
-  localStorage.setItem('doi_sidebar', sidebarOpen ? 'open' : 'closed');
-  applySidebar();
-});
-
-applySidebar();
 </script>
 </body>
 </html>
