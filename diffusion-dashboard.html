@@ -10,49 +10,21 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Inter',system-ui,sans-serif;background:#f7f6f3;color:#0b0b0b;min-height:100vh;}
-
 .app{display:flex;min-height:100vh;}
-
-/* Main */
 .main{flex:1;padding:32px 36px;overflow-y:auto;display:flex;flex-direction:column;gap:24px;min-width:0;}
-
-/* Sidebar — slides in from the right */
-.sidebar{
-  width:320px;min-width:320px;
-  background:#ffffff;border-left:0.5px solid #e1e0d9;
-  display:flex;flex-direction:column;gap:20px;
-  padding:24px 20px;overflow-y:auto;
-  transition:width 0.25s ease,min-width 0.25s ease,padding 0.25s ease,opacity 0.2s ease;
-}
+.sidebar{width:320px;min-width:320px;background:#fff;border-left:0.5px solid #e1e0d9;display:flex;flex-direction:column;gap:20px;padding:24px 20px;overflow-y:auto;transition:width .25s ease,min-width .25s ease,padding .25s ease,opacity .2s ease;}
 .sidebar.collapsed{width:0;min-width:0;padding:0;opacity:0;overflow:hidden;border-left:none;}
-
-/* Hamburger — fixed top right */
-.toggle-btn{
-  position:fixed;top:16px;right:16px;z-index:200;
-  background:#ffffff;border:0.5px solid #d3d1c7;border-radius:6px;
-  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:16px;color:#52514e;
-  box-shadow:0 1px 4px rgba(0,0,0,0.06);
-  transition:background 0.15s;
-}
+.toggle-btn{position:fixed;top:16px;right:16px;z-index:200;background:#fff;border:0.5px solid #d3d1c7;border-radius:6px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:#52514e;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:background .15s;}
 .toggle-btn:hover{background:#f7f6f3;}
-
-/* Sidebar internals */
 .sidebar-title{font-size:15px;font-weight:500;color:#0b0b0b;}
 .sidebar-sub{font-size:12px;color:#898781;margin-top:3px;line-height:1.5;}
 .field-group{display:flex;flex-direction:column;gap:6px;}
 .field-label{font-size:12px;color:#52514e;font-weight:500;}
 .field-hint{font-size:11px;color:#b4b2a9;line-height:1.5;}
-input[type=text],input[type=number]{
-  width:100%;padding:8px 10px;border:0.5px solid #d3d1c7;border-radius:6px;
-  font-size:13px;font-family:inherit;color:#0b0b0b;background:#ffffff;
-  outline:none;transition:border-color 0.15s;
-}
-input[type=text]:focus,input[type=number]:focus{border-color:#2a78d6;box-shadow:0 0 0 3px rgba(42,120,214,0.1);}
+input[type=text],input[type=number]{width:100%;padding:8px 10px;border:0.5px solid #d3d1c7;border-radius:6px;font-size:13px;font-family:inherit;color:#0b0b0b;background:#fff;outline:none;transition:border-color .15s;}
+input[type=text]:focus,input[type=number]:focus{border-color:#2a78d6;box-shadow:0 0 0 3px rgba(42,120,214,.1);}
 input::placeholder{color:#b4b2a9;}
 .divider{height:0.5px;background:#e1e0d9;flex-shrink:0;}
-
-/* Metric rows */
 .metrics-section{display:flex;flex-direction:column;gap:10px;}
 .metric-row{background:#f7f6f3;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;}
 .metric-row-header{display:flex;align-items:center;gap:8px;}
@@ -62,46 +34,46 @@ input::placeholder{color:#b4b2a9;}
 .metric-toggle-row{display:flex;align-items:center;gap:8px;margin-top:2px;}
 .toggle-switch{position:relative;width:32px;height:18px;flex-shrink:0;}
 .toggle-switch input{opacity:0;width:0;height:0;}
-.toggle-slider{position:absolute;inset:0;background:#d3d1c7;border-radius:9px;cursor:pointer;transition:background 0.2s;}
-.toggle-slider::before{content:'';position:absolute;width:14px;height:14px;left:2px;top:2px;background:#fff;border-radius:50%;transition:transform 0.2s;}
+.toggle-slider{position:absolute;inset:0;background:#d3d1c7;border-radius:9px;cursor:pointer;transition:background .2s;}
+.toggle-slider::before{content:'';position:absolute;width:14px;height:14px;left:2px;top:2px;background:#fff;border-radius:50%;transition:transform .2s;}
 .toggle-switch input:checked+.toggle-slider{background:var(--mc,#2a78d6);}
 .toggle-switch input:checked+.toggle-slider::before{transform:translateX(14px);}
 .toggle-label{font-size:12px;color:#52514e;}
-
-.btn{width:100%;padding:9px;border:0.5px solid #d3d1c7;border-radius:6px;background:#fff;font-family:inherit;font-size:13px;color:#52514e;cursor:pointer;transition:background 0.15s,border-color 0.15s;text-align:center;}
+.btn{width:100%;padding:9px;border:0.5px solid #d3d1c7;border-radius:6px;background:#fff;font-family:inherit;font-size:13px;color:#52514e;cursor:pointer;transition:background .15s,border-color .15s;text-align:center;}
 .btn:hover{background:#f7f6f3;border-color:#b4b2a9;}
 .btn-primary{background:#0b0b0b;color:#fff;border-color:#0b0b0b;}
 .btn-primary:hover{background:#2c2c2a;border-color:#2c2c2a;}
-
-/* Page header */
 .page-header{display:flex;align-items:flex-start;justify-content:space-between;padding-right:48px;}
 .page-title{font-size:20px;font-weight:500;color:#0b0b0b;}
 .page-sub{font-size:13px;color:#898781;margin-top:4px;}
-
-/* Stat cards */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
-.stat-card{background:#ffffff;border:0.5px solid #e1e0d9;border-radius:8px;padding:14px 16px;}
+.stat-card{background:#fff;border:0.5px solid #e1e0d9;border-radius:8px;padding:14px 16px;}
 .stat-card-label{font-size:11px;color:#898781;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
 .stat-card-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.stat-card-value{font-size:22px;font-weight:500;color:#0b0b0b;letter-spacing:-0.5px;}
+.stat-card-value{font-size:22px;font-weight:500;color:#0b0b0b;letter-spacing:-.5px;}
 .stat-card-sub{font-size:11px;color:#b4b2a9;margin-top:3px;}
 .seg-badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;margin-top:6px;font-weight:500;}
-
-/* Chart cards */
-.chart-card{background:#ffffff;border:0.5px solid #e1e0d9;border-radius:10px;padding:24px;}
+.chart-card{background:#fff;border:0.5px solid #e1e0d9;border-radius:10px;padding:24px;}
 .chart-title{font-size:14px;font-weight:500;color:#0b0b0b;margin-bottom:2px;}
 .chart-sub{font-size:12px;color:#898781;}
 .chart-wrap{position:relative;margin-top:20px;}
-.chart-wrap canvas{width:100%!important;}
-.tooltip-box{position:absolute;background:#ffffff;border:0.5px solid #d3d1c7;border-radius:8px;padding:10px 14px;font-size:12px;color:#0b0b0b;pointer-events:none;white-space:nowrap;box-shadow:0 2px 12px rgba(0,0,0,0.08);transition:opacity 0.1s;z-index:10;line-height:1.75;}
+.tooltip-box{position:absolute;background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;padding:10px 14px;font-size:12px;color:#0b0b0b;pointer-events:none;white-space:nowrap;box-shadow:0 2px 12px rgba(0,0,0,.08);transition:opacity .1s;z-index:10;line-height:1.75;}
 .legend-row{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap;}
 .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#898781;}
 .legend-line{width:22px;height:2px;border-radius:2px;}
 .legend-dash{width:22px;border-top:2px dashed #b4b2a9;}
 
-/* Upload area */
+/* Chart toggles */
+.chart-controls{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.chart-toggle-group{display:flex;border:0.5px solid #d3d1c7;border-radius:6px;overflow:hidden;}
+.chart-toggle-btn{padding:5px 12px;font-size:12px;font-family:inherit;background:#fff;border:none;border-right:0.5px solid #d3d1c7;cursor:pointer;color:#52514e;transition:background .15s,color .15s;}
+.chart-toggle-btn:last-child{border-right:none;}
+.chart-toggle-btn.active{background:#0b0b0b;color:#fff;}
+.chart-toggle-btn:hover:not(.active){background:#f7f6f3;}
+.chart-controls-label{font-size:11px;color:#b4b2a9;align-self:center;}
+
 .upload-section{display:flex;flex-direction:column;gap:16px;}
-.upload-block{border:0.5px dashed #d3d1c7;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:border-color 0.15s,background 0.15s;position:relative;}
+.upload-block{border:0.5px dashed #d3d1c7;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:border-color .15s,background .15s;position:relative;}
 .upload-block:hover{border-color:#2a78d6;background:#f0f6ff;}
 .upload-block.has-file{border-style:solid;border-color:#1baf7a;background:#f0fbf6;}
 .upload-block input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
@@ -110,73 +82,83 @@ input::placeholder{color:#b4b2a9;}
 .upload-hint{font-size:11px;color:#898781;line-height:1.5;}
 .upload-status{font-size:11px;color:#1baf7a;font-weight:500;margin-top:2px;}
 .upload-error{font-size:11px;color:#e34948;font-weight:500;margin-top:2px;}
-
-/* Column mapper */
-.mapper{background:#f7f6f3;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;}
+.mapper{background:#f7f6f3;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;margin-top:8px;}
 .mapper-title{font-size:12px;font-weight:500;color:#0b0b0b;}
 .mapper-row{display:flex;flex-direction:column;gap:4px;}
 .mapper-label{font-size:11px;color:#52514e;}
-select{width:100%;padding:7px 10px;border:0.5px solid #d3d1c7;border-radius:6px;font-size:12px;font-family:inherit;color:#0b0b0b;background:#ffffff;outline:none;}
+select{width:100%;padding:7px 10px;border:0.5px solid #d3d1c7;border-radius:6px;font-size:12px;font-family:inherit;color:#0b0b0b;background:#fff;outline:none;}
 select:focus{border-color:#2a78d6;}
-
-/* Rogers table */
-.rogers-card{background:#ffffff;border:0.5px solid #e1e0d9;border-radius:10px;padding:20px 24px;}
+.rogers-card{background:#fff;border:0.5px solid #e1e0d9;border-radius:10px;padding:20px 24px;}
 .rogers-title{font-size:13px;font-weight:500;color:#0b0b0b;margin-bottom:12px;}
 .rogers-table{width:100%;border-collapse:collapse;font-size:12px;}
 .rogers-table th{text-align:left;color:#898781;font-weight:500;padding:0 12px 8px 0;border-bottom:0.5px solid #e1e0d9;}
 .rogers-table td{padding:7px 12px 7px 0;border-bottom:0.5px solid #f0efe8;color:#52514e;vertical-align:middle;}
 .rogers-table tr:last-child td{border-bottom:none;}
 .seg-bar{height:8px;border-radius:3px;}
-
-/* Rogers about */
-.about-card{background:#ffffff;border:0.5px solid #e1e0d9;border-radius:10px;overflow:hidden;}
+.about-card{background:#fff;border:0.5px solid #e1e0d9;border-radius:10px;overflow:hidden;}
 .about-header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
 .about-header-title{font-size:13px;font-weight:500;color:#0b0b0b;}
-.about-chevron{font-size:12px;color:#898781;transition:transform 0.2s;}
+.about-chevron{font-size:12px;color:#898781;transition:transform .2s;}
 .about-chevron.open{transform:rotate(180deg);}
 .about-body{padding:0 20px 20px;display:none;flex-direction:column;gap:12px;}
 .about-body.open{display:flex;}
 .about-body p{font-size:13px;color:#52514e;line-height:1.65;}
 .about-body cite{font-size:11px;color:#b4b2a9;display:block;margin-top:4px;}
-
-@media(max-width:700px){
-  .app{flex-direction:column;}
-  .sidebar{width:100%!important;min-width:unset!important;border-left:none;border-top:0.5px solid #e1e0d9;}
-  .main{padding:20px 16px;}
-  .toggle-btn{display:none;}
-}
+@media(max-width:700px){.app{flex-direction:column;}.sidebar{width:100%!important;min-width:unset!important;border-left:none;border-top:0.5px solid #e1e0d9;}.main{padding:20px 16px;}.toggle-btn{display:none;}}
 </style>
 </head>
 <body>
 <button class="toggle-btn" id="toggleBtn" title="Toggle settings">&#9776;</button>
-
 <div class="app">
 <main class="main" id="mainArea">
-
   <div class="page-header">
     <div>
       <div class="page-title">Diffusion of innovations</div>
       <div class="page-sub" id="pageSubtitle">Configure your potential customer pool in the settings panel</div>
     </div>
   </div>
-
   <div class="stats-grid" id="statsGrid"></div>
 
+  <!-- Adoption curve (metrics) -->
   <div class="chart-card">
-    <div class="chart-title">Adoption curve &amp; blended CAC</div>
-    <div class="chart-sub">Cumulative adoption approximates rising CAC — as the unconverted pool shrinks, each new customer costs more to acquire</div>
-    <div class="chart-wrap" style="height:380px;">
-      <canvas id="doiCanvas" role="img" aria-label="Diffusion of innovations S-curve with blended CAC overlay"></canvas>
+    <div class="chart-title">Adoption curve</div>
+    <div class="chart-sub">Where each metric sits on the Rogers diffusion curve against your potential customer pool</div>
+    <div class="chart-wrap" style="height:320px;">
+      <canvas id="doiCanvas" role="img" aria-label="Diffusion of innovations S-curve showing cumulative adoption by segment"></canvas>
       <div class="tooltip-box" id="doiTooltip" style="opacity:0;"></div>
     </div>
     <div class="legend-row" id="doiLegend"></div>
   </div>
 
-  <div class="chart-card" id="cacChartCard" style="display:none;">
-    <div class="chart-title">Blended CAC over time</div>
-    <div class="chart-sub">Total ad spend ÷ new customers, aggregated monthly</div>
-    <div class="chart-wrap" style="height:260px;">
-      <canvas id="cacCanvas" role="img" aria-label="Blended CAC over time"></canvas>
+  <!-- CAC on Rogers curve -->
+  <div class="chart-card" id="cacCard" style="display:none;">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <div>
+        <div class="chart-title">Blended CAC on the Rogers curve</div>
+        <div class="chart-sub">As cumulative adoption grows, each new customer costs more to acquire</div>
+      </div>
+      <div class="chart-controls">
+        <span class="chart-controls-label">View:</span>
+        <div class="chart-toggle-group">
+          <button class="chart-toggle-btn active" id="btnLine" onclick="setChartType('line')">Line</button>
+          <button class="chart-toggle-btn" id="btnBar" onclick="setChartType('bar')">Bar</button>
+        </div>
+        <div class="chart-toggle-group">
+          <button class="chart-toggle-btn active" id="btnMonthly" onclick="setChartGranularity('monthly')">Monthly</button>
+          <button class="chart-toggle-btn" id="btnAnnual" onclick="setChartGranularity('annual')">Annual</button>
+        </div>
+      </div>
+    </div>
+    <div class="chart-wrap" style="height:340px;">
+      <canvas id="cacCanvas" role="img" aria-label="Blended CAC plotted on Rogers diffusion curve"></canvas>
+    </div>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-line" style="background:#2a78d6;"></div>Actual blended CAC</div>
+      <div class="legend-item"><div class="legend-dash" style="border-top-color:#e34948;"></div>Theoretical rising CAC</div>
+      <div class="legend-item"><div style="width:16px;height:10px;background:#888780;opacity:0.4;border-radius:2px;"></div>Rogers segments</div>
+    </div>
+    <div style="margin-top:12px;background:#f7f6f3;border-radius:8px;padding:10px 14px;font-size:12px;color:#52514e;line-height:1.6;">
+      <strong style="color:#0b0b0b;">How to read this:</strong> The x-axis is not time — it is cumulative adoption of the potential customer pool. Each point is positioned at the adoption % for that period. As JD moves rightward, CAC trends upward — consistent with Rogers' prediction that the easiest-to-convert customers come first.
     </div>
   </div>
 
@@ -200,38 +182,31 @@ select:focus{border-color:#2a78d6;}
       <cite>Rogers, E.M. (1962). Diffusion of Innovations. Free Press of Glencoe. Now in its 5th edition (2003).</cite>
     </div>
   </div>
-
 </main>
 
 <aside class="sidebar" id="sidebar">
   <div>
     <div class="sidebar-title">Configuration</div>
-    <div class="sidebar-sub">Set your potential customer pool, adoption metrics, and optionally upload data to calculate blended CAC.</div>
+    <div class="sidebar-sub">Set your potential customer pool, adoption metrics, and upload CAC data.</div>
   </div>
-
   <div class="field-group">
     <div class="field-label">Potential customer pool size</div>
     <div class="field-hint">Total number of people who could realistically become customers</div>
     <input type="number" id="poolInput" placeholder="e.g. 5000000" min="1">
     <input type="text" id="poolLabelInput" placeholder="Pool description (optional)" style="margin-top:4px;">
   </div>
-
   <div class="divider"></div>
-
   <div>
     <div class="field-label" style="margin-bottom:10px;">Adoption metrics <span style="color:#b4b2a9;font-weight:400;">(up to 5)</span></div>
     <div class="metrics-section" id="metricsSection"></div>
   </div>
-
   <div class="divider"></div>
-
   <div class="upload-section">
     <div>
       <div class="field-label">CAC data upload</div>
-      <div class="field-hint" style="margin-top:4px;">Upload one Shopify new customers file and one or more ad spend files. The dashboard will calculate blended CAC automatically. All files must have a date/month column. Aggregated to monthly.</div>
+      <div class="field-hint" style="margin-top:4px;">Upload one Shopify new customers file and one or more ad spend files (monthly). The dashboard calculates blended CAC and plots it on the Rogers curve.</div>
     </div>
-
-    <div class="upload-block" id="shopifyUploadBlock">
+    <div class="upload-block" id="shopifyBlock">
       <input type="file" id="shopifyFile" accept=".csv" title="">
       <div class="upload-icon">&#8593;</div>
       <div class="upload-label">Shopify — new customers</div>
@@ -239,33 +214,29 @@ select:focus{border-color:#2a78d6;}
       <div class="upload-status" id="shopifyStatus"></div>
       <div class="upload-error" id="shopifyError"></div>
     </div>
-
-    <div id="shopifyMapper" style="display:none;"></div>
-
+    <div id="shopifyMapper"></div>
     <div id="spendUploads">
-      <div class="upload-block" id="spendUploadBlock0">
+      <div class="upload-block" id="spendBlock0">
         <input type="file" class="spend-file" accept=".csv" data-idx="0" title="">
         <div class="upload-icon">&#8593;</div>
         <div class="upload-label">Ad spend file 1</div>
-        <div class="upload-hint">Meta, Google, TikTok, etc. — CSV with date and spend columns</div>
+        <div class="upload-hint">Meta, Google, TikTok etc. — date and spend columns</div>
         <div class="upload-status" id="spendStatus0"></div>
         <div class="upload-error" id="spendError0"></div>
       </div>
-      <div id="spendMapper0" style="display:none;margin-top:8px;"></div>
+      <div id="spendMapper0"></div>
     </div>
-
     <button class="btn" id="addSpendBtn">+ Add another spend file</button>
-    <button class="btn btn-primary" id="calcCacBtn" style="display:none;">Calculate blended CAC</button>
-    <button class="btn" id="clearCacBtn" style="display:none;">Clear CAC data</button>
+    <button class="btn btn-primary" id="calcBtn" style="display:none;">Calculate blended CAC</button>
+    <button class="btn" id="clearBtn" style="display:none;">Clear CAC data</button>
   </div>
-
   <div class="divider"></div>
-
   <button class="btn" id="resetBtn">Reset all</button>
 </aside>
 </div>
 
 <script>
+// ── CONSTANTS ──────────────────────────────────────────────────────────────
 const COLORS=['#e34948','#2a78d6','#1baf7a','#eda100','#4a3aa7'];
 const SEG_STYLES={
   'Innovators':{bg:'#f1efe8',text:'#5f5e5a'},
@@ -284,566 +255,384 @@ const SEGMENTS=[
 const BB_F=[0,0.07,0.23,0.57,0.91,1];
 const BB_C=[0,2.5,16,50,84,100];
 
-function fracForCum(p){
-  for(let i=0;i<BB_C.length-1;i++){
-    if(p>=BB_C[i]&&p<=BB_C[i+1]){
-      const t=(p-BB_C[i])/(BB_C[i+1]-BB_C[i]);
-      return BB_F[i]+t*(BB_F[i+1]-BB_F[i]);
-    }
-  }
-  return p<=0?0:1;
-}
-function cumForFrac(f){
-  for(let i=0;i<BB_F.length-1;i++){
-    if(f>=BB_F[i]&&f<=BB_F[i+1]){
-      const t=(f-BB_F[i])/(BB_F[i+1]-BB_F[i]);
-      return BB_C[i]+t*(BB_C[i+1]-BB_C[i]);
-    }
-  }
-  return f>=1?100:0;
-}
+function fracForCum(p){for(let i=0;i<BB_C.length-1;i++){if(p>=BB_C[i]&&p<=BB_C[i+1]){const t=(p-BB_C[i])/(BB_C[i+1]-BB_C[i]);return BB_F[i]+t*(BB_F[i+1]-BB_F[i]);}}return p<=0?0:1;}
+function cumForFrac(f){for(let i=0;i<BB_F.length-1;i++){if(f>=BB_F[i]&&f<=BB_F[i+1]){const t=(f-BB_F[i])/(BB_F[i+1]-BB_F[i]);return BB_C[i]+t*(BB_C[i+1]-BB_C[i]);}}return f>=1?100:0;}
 function segFor(p){for(const s of SEGMENTS){if(p<=s.cumEnd)return s.label;}return 'Laggards';}
-function fmt(n){
-  if(!n||isNaN(n))return '—';
-  if(n>=1000000)return(n/1000000).toFixed(1).replace(/\.0$/,'')+'M';
-  if(n>=1000)return Math.round(n/1000)+'K';
-  return Number(n).toLocaleString();
-}
-function fmtCAC(n){
-  if(!n||isNaN(n))return '—';
-  return '$'+n.toFixed(2);
-}
-function parseMonth(str){
-  if(!str)return null;
-  const s=String(str).trim();
-  const d=new Date(s);
-  if(!isNaN(d))return d.toISOString().slice(0,7);
-  const m=s.match(/(\d{4})[\/\-](\d{1,2})/);
-  if(m)return m[1]+'-'+String(m[2]).padStart(2,'0');
-  return null;
-}
+function fmt(n){if(!n||isNaN(n))return '—';if(n>=1000000)return(n/1000000).toFixed(1).replace(/\.0$/,'')+'M';if(n>=1000)return Math.round(n/1000)+'K';return Number(n).toLocaleString();}
+function parseMonth(str){if(!str)return null;const s=String(str).trim();const d=new Date(s);if(!isNaN(d))return d.toISOString().slice(0,7);const m=s.match(/(\d{4})[\/\-](\d{1,2})/);if(m)return m[1]+'-'+String(m[2]).padStart(2,'0');return null;}
+function guessCol(cols,kws){for(const c of cols){if(kws.some(k=>c.toLowerCase().includes(k)))return c;}return cols[0]||'';}
 
-// State
-const DEFAULT={
-  pool:'',poolLabel:'',
-  metrics:[
-    {name:'',value:'',active:true},{name:'',value:'',active:true},
-    {name:'',value:'',active:true},{name:'',value:'',active:true},{name:'',value:'',active:true}
-  ]
-};
-function loadState(){
-  try{const s=localStorage.getItem('doi_v2');if(s)return JSON.parse(s);}catch(e){}
-  return JSON.parse(JSON.stringify(DEFAULT));
-}
-function saveState(){localStorage.setItem('doi_v2',JSON.stringify(state));}
+// ── STATE ──────────────────────────────────────────────────────────────────
+const DEFAULT={pool:'',poolLabel:'',metrics:[{name:'',value:'',active:true},{name:'',value:'',active:true},{name:'',value:'',active:true},{name:'',value:'',active:true},{name:'',value:'',active:true}]};
+function loadState(){try{const s=localStorage.getItem('doi_v3');if(s)return JSON.parse(s);}catch(e){}return JSON.parse(JSON.stringify(DEFAULT));}
+function saveState(){localStorage.setItem('doi_v3',JSON.stringify(state));}
 let state=loadState();
 
-// CAC data (not persisted — upload each session)
-let shopifyData=null; // {col_date, col_customers, rows}
-let spendFiles=[{data:null}]; // array of {col_date, col_spend, rows}
-let cacSeries=null; // [{month, cac}]
+// CAC state — persisted as calculated series
+let cacSeries=null; // [{month, cumCust, cac}]
+try{const s=localStorage.getItem('doi_cac');if(s)cacSeries=JSON.parse(s);}catch(e){}
 
-// Sidebar toggle
+let shopifyData=null;
+let spendFiles=[{}];
+let spendCount=1;
+let chartType='line'; // 'line' | 'bar'
+let chartGran='monthly'; // 'monthly' | 'annual'
+
+// ── SIDEBAR TOGGLE ─────────────────────────────────────────────────────────
 const sidebar=document.getElementById('sidebar');
 const toggleBtn=document.getElementById('toggleBtn');
-let sidebarOpen=localStorage.getItem('doi_sidebar2')!=='closed';
+let sidebarOpen=localStorage.getItem('doi_sidebar3')!=='closed';
 function applySidebar(){
   if(sidebarOpen){sidebar.classList.remove('collapsed');toggleBtn.title='Hide settings';}
   else{sidebar.classList.add('collapsed');toggleBtn.title='Show settings';}
   setTimeout(()=>{if(doiChart)doiChart.resize();if(cacChart)cacChart.resize();},270);
 }
-toggleBtn.addEventListener('click',()=>{
-  sidebarOpen=!sidebarOpen;
-  localStorage.setItem('doi_sidebar2',sidebarOpen?'open':'closed');
-  applySidebar();
-});
+toggleBtn.addEventListener('click',()=>{sidebarOpen=!sidebarOpen;localStorage.setItem('doi_sidebar3',sidebarOpen?'open':'closed');applySidebar();});
 applySidebar();
 
-// About accordion
+// ── ABOUT ──────────────────────────────────────────────────────────────────
 document.getElementById('aboutHeader').addEventListener('click',()=>{
-  const body=document.getElementById('aboutBody');
-  const chev=document.getElementById('aboutChevron');
-  body.classList.toggle('open');
-  chev.classList.toggle('open');
+  document.getElementById('aboutBody').classList.toggle('open');
+  document.getElementById('aboutChevron').classList.toggle('open');
 });
 
-// Sidebar inputs
+// ── SIDEBAR INPUTS ─────────────────────────────────────────────────────────
 function buildSidebar(){
   document.getElementById('poolInput').value=state.pool;
   document.getElementById('poolLabelInput').value=state.poolLabel;
   document.getElementById('poolInput').oninput=e=>{state.pool=e.target.value;saveState();render();};
   document.getElementById('poolLabelInput').oninput=e=>{state.poolLabel=e.target.value;saveState();render();};
-
   const sec=document.getElementById('metricsSection');
   sec.innerHTML='';
   state.metrics.forEach((m,i)=>{
     const color=COLORS[i];
     const div=document.createElement('div');
     div.className='metric-row';
-    div.innerHTML=`
-      <div class="metric-row-header">
-        <div class="metric-color-dot" style="background:${color}"></div>
-        <div class="metric-row-num">Metric ${i+1}</div>
-      </div>
+    div.innerHTML=`<div class="metric-row-header"><div class="metric-color-dot" style="background:${color}"></div><div class="metric-row-num">Metric ${i+1}</div></div>
       <div class="metric-inputs">
         <input type="text" placeholder="Name" value="${m.name||''}" data-i="${i}" data-f="name">
         <input type="number" placeholder="Count" value="${m.value||''}" min="0" data-i="${i}" data-f="value">
       </div>
       <div class="metric-toggle-row">
-        <label class="toggle-switch" style="--mc:${color}">
-          <input type="checkbox" ${m.active?'checked':''} data-i="${i}" data-f="active">
-          <span class="toggle-slider"></span>
-        </label>
+        <label class="toggle-switch" style="--mc:${color}"><input type="checkbox" ${m.active?'checked':''} data-i="${i}" data-f="active"><span class="toggle-slider"></span></label>
         <span class="toggle-label">Show on chart</span>
       </div>`;
     sec.appendChild(div);
   });
-  sec.querySelectorAll('input').forEach(inp=>{
-    inp.oninput=()=>{
-      const i=+inp.dataset.i,f=inp.dataset.f;
-      state.metrics[i][f]=f==='active'?inp.checked:inp.value;
-      saveState();render();
-    };
-  });
-  document.getElementById('resetBtn').onclick=()=>{
-    if(!confirm('Reset all configuration?'))return;
-    state=JSON.parse(JSON.stringify(DEFAULT));
-    saveState();buildSidebar();render();
-  };
+  sec.querySelectorAll('input').forEach(inp=>{inp.oninput=()=>{const i=+inp.dataset.i,f=inp.dataset.f;state.metrics[i][f]=f==='active'?inp.checked:inp.value;saveState();render();};});
+  document.getElementById('resetBtn').onclick=()=>{if(!confirm('Reset all configuration?'))return;state=JSON.parse(JSON.stringify(DEFAULT));saveState();cacSeries=null;localStorage.removeItem('doi_cac');buildSidebar();render();};
 }
 
-// ============ CSV UPLOAD & MAPPING ============
-function detectColumns(rows){
-  if(!rows||!rows.length)return[];
-  return Object.keys(rows[0]);
-}
-
-function guessDateCol(cols){
-  const kw=['date','month','day','period','week','time'];
-  for(const c of cols){if(kw.some(k=>c.toLowerCase().includes(k)))return c;}
-  return cols[0]||'';
-}
-function guessCustomerCol(cols){
-  const kw=['new','customer','first','buyer'];
-  for(const c of cols){if(kw.some(k=>c.toLowerCase().includes(k)))return c;}
-  return cols[1]||'';
-}
-function guessSpendCol(cols){
-  const kw=['spend','cost','amount','budget','paid'];
-  for(const c of cols){if(kw.some(k=>c.toLowerCase().includes(k)))return c;}
-  return cols[1]||'';
-}
-
-function buildMapper(containerId,cols,fields,onchange){
-  const el=document.getElementById(containerId);
-  el.style.display='block';
+// ── UPLOAD & MAPPING ───────────────────────────────────────────────────────
+function buildMapper(id,cols,fields,cb){
+  let el=document.getElementById(id);
+  if(!el){el=document.createElement('div');el.id=id;document.getElementById(id.replace('Mapper','Block').replace('spendMapper','spendBlock'))?.after(el);}
   el.innerHTML='';
-  const div=document.createElement('div');
-  div.className='mapper';
-  let html=`<div class="mapper-title">Map columns</div>`;
-  fields.forEach(f=>{
-    const guess=f.guess(cols);
-    html+=`<div class="mapper-row">
-      <div class="mapper-label">${f.label}</div>
-      <select data-field="${f.key}">
-        ${cols.map(c=>`<option value="${c}"${c===guess?' selected':''}>${c}</option>`).join('')}
-      </select>
-    </div>`;
-  });
-  div.innerHTML=html;
-  div.querySelectorAll('select').forEach(s=>{s.onchange=onchange;});
-  el.appendChild(div);
+  const d=document.createElement('div');d.className='mapper';
+  let h=`<div class="mapper-title">Map columns</div>`;
+  fields.forEach(f=>{const g=guessCol(cols,f.kw);h+=`<div class="mapper-row"><div class="mapper-label">${f.label}</div><select data-field="${f.key}">${cols.map(c=>`<option${c===g?' selected':''}>${c}</option>`).join('')}</select></div>`;});
+  d.innerHTML=h;d.querySelectorAll('select').forEach(s=>s.onchange=cb);el.appendChild(d);
 }
+function getMapper(id){const o={};document.querySelectorAll(`#${id} select`).forEach(s=>o[s.dataset.field]=s.value);return o;}
 
-function getMapperValues(containerId){
-  const el=document.getElementById(containerId);
-  const out={};
-  el.querySelectorAll('select').forEach(s=>{out[s.dataset.field]=s.value;});
-  return out;
-}
-
-// Shopify upload
 document.getElementById('shopifyFile').onchange=function(e){
-  const file=e.target.files[0];
-  if(!file)return;
-  Papa.parse(file,{
-    header:true,skipEmptyLines:true,
-    complete(res){
-      const cols=detectColumns(res.data);
-      if(!cols.length){document.getElementById('shopifyError').textContent='Could not read file.';return;}
-      shopifyData={rows:res.data,cols};
-      document.getElementById('shopifyStatus').textContent=`✓ ${file.name} (${res.data.length} rows)`;
-      document.getElementById('shopifyUploadBlock').classList.add('has-file');
-      buildMapper('shopifyMapper',cols,[
-        {key:'date',label:'Date / month column',guess:guessDateCol},
-        {key:'customers',label:'New customers column',guess:guessCustomerCol},
-      ],checkCanCalculate);
-      checkCanCalculate();
-    },
-    error(){document.getElementById('shopifyError').textContent='Error reading file.';}
-  });
+  const f=e.target.files[0];if(!f)return;
+  Papa.parse(f,{header:true,skipEmptyLines:true,complete(res){
+    const cols=Object.keys(res.data[0]||{});if(!cols.length)return;
+    shopifyData={rows:res.data,cols};
+    document.getElementById('shopifyStatus').textContent=`✓ ${f.name} (${res.data.length} rows)`;
+    document.getElementById('shopifyBlock').classList.add('has-file');
+    buildMapper('shopifyMapper',cols,[{key:'date',label:'Date column',kw:['date','month','day','period']},{key:'customers',label:'New customers column',kw:['new','customer','first']}],checkCanCalc);
+    checkCanCalc();
+  }});
 };
 
-// Spend uploads
-let spendCount=1;
-function wireSpendFile(idx){
-  const input=document.querySelector(`.spend-file[data-idx="${idx}"]`);
-  if(!input)return;
-  input.onchange=function(e){
-    const file=e.target.files[0];
-    if(!file)return;
-    Papa.parse(file,{
-      header:true,skipEmptyLines:true,
-      complete(res){
-        const cols=detectColumns(res.data);
-        if(!cols.length){document.getElementById(`spendError${idx}`).textContent='Could not read file.';return;}
-        if(!spendFiles[idx])spendFiles[idx]={};
-        spendFiles[idx].rows=res.data;
-        spendFiles[idx].cols=cols;
-        document.getElementById(`spendStatus${idx}`).textContent=`✓ ${file.name} (${res.data.length} rows)`;
-        document.getElementById(`spendUploadBlock${idx}`).classList.add('has-file');
-        const mapId=`spendMapper${idx}`;
-        let mapEl=document.getElementById(mapId);
-        if(!mapEl){mapEl=document.createElement('div');mapEl.id=mapId;mapEl.style.marginTop='8px';document.getElementById(`spendUploadBlock${idx}`).after(mapEl);}
-        buildMapper(mapId,cols,[
-          {key:'date',label:'Date / month column',guess:guessDateCol},
-          {key:'spend',label:'Spend column',guess:guessSpendCol},
-        ],checkCanCalculate);
-        checkCanCalculate();
-      },
-      error(){document.getElementById(`spendError${idx}`).textContent='Error reading file.';}
-    });
+function wireSpend(idx){
+  const inp=document.querySelector(`.spend-file[data-idx="${idx}"]`);if(!inp)return;
+  inp.onchange=function(e){
+    const f=e.target.files[0];if(!f)return;
+    Papa.parse(f,{header:true,skipEmptyLines:true,complete(res){
+      const cols=Object.keys(res.data[0]||{});if(!cols.length)return;
+      spendFiles[idx]={rows:res.data,cols};
+      document.getElementById(`spendStatus${idx}`).textContent=`✓ ${f.name} (${res.data.length} rows)`;
+      document.getElementById(`spendBlock${idx}`).classList.add('has-file');
+      buildMapper(`spendMapper${idx}`,cols,[{key:'date',label:'Date column',kw:['date','month','day','period']},{key:'spend',label:'Spend column',kw:['spend','cost','amount','budget']}],checkCanCalc);
+      checkCanCalc();
+    }});
   };
 }
-wireSpendFile(0);
+wireSpend(0);
 
 document.getElementById('addSpendBtn').onclick=()=>{
   if(spendCount>=5)return;
-  const idx=spendCount++;
-  spendFiles.push({});
-  const container=document.getElementById('spendUploads');
-  const block=document.createElement('div');
-  block.id=`spendUploadBlock${idx}`;
-  block.className='upload-block';
-  block.style.marginTop='10px';
-  block.innerHTML=`
-    <input type="file" class="spend-file" accept=".csv" data-idx="${idx}" title="">
-    <div class="upload-icon">&#8593;</div>
-    <div class="upload-label">Ad spend file ${idx+1}</div>
-    <div class="upload-hint">Meta, Google, TikTok, etc.</div>
-    <div class="upload-status" id="spendStatus${idx}"></div>
-    <div class="upload-error" id="spendError${idx}"></div>`;
-  container.appendChild(block);
-  wireSpendFile(idx);
+  const idx=spendCount++;spendFiles.push({});
+  const con=document.getElementById('spendUploads');
+  const b=document.createElement('div');b.id=`spendBlock${idx}`;b.className='upload-block';b.style.marginTop='10px';
+  b.innerHTML=`<input type="file" class="spend-file" accept=".csv" data-idx="${idx}" title=""><div class="upload-icon">&#8593;</div><div class="upload-label">Ad spend file ${idx+1}</div><div class="upload-hint">Meta, Google, TikTok etc.</div><div class="upload-status" id="spendStatus${idx}"></div><div class="upload-error" id="spendError${idx}"></div>`;
+  con.appendChild(b);wireSpend(idx);
   if(spendCount>=5)document.getElementById('addSpendBtn').style.display='none';
 };
 
-function checkCanCalculate(){
-  const hasShopify=shopifyData&&shopifyData.rows;
-  const hasSpend=spendFiles.some(f=>f&&f.rows);
-  document.getElementById('calcCacBtn').style.display=(hasShopify&&hasSpend)?'block':'none';
+function checkCanCalc(){
+  const ok=shopifyData?.rows&&spendFiles.some(f=>f?.rows);
+  document.getElementById('calcBtn').style.display=ok?'block':'none';
 }
 
-document.getElementById('calcCacBtn').onclick=calculateCAC;
-document.getElementById('clearCacBtn').onclick=()=>{
-  cacSeries=null;
-  document.getElementById('cacChartCard').style.display='none';
-  document.getElementById('clearCacBtn').style.display='none';
-  if(cacChart){cacChart.destroy();cacChart=null;}
-  renderDoiChart();
-};
-
-function calculateCAC(){
-  // Get Shopify mapping
-  const sm=getMapperValues('shopifyMapper');
+document.getElementById('calcBtn').onclick=()=>{
+  const sm=getMapper('shopifyMapper');
   if(!sm.date||!sm.customers){alert('Please map the Shopify columns.');return;}
-
-  // Aggregate Shopify by month
   const custByMonth={};
   shopifyData.rows.forEach(r=>{
-    const mo=parseMonth(r[sm.date]);
-    if(!mo)return;
+    const mo=parseMonth(r[sm.date]);if(!mo)return;
     const n=parseFloat(String(r[sm.customers]).replace(/[,$]/g,''))||0;
     custByMonth[mo]=(custByMonth[mo]||0)+n;
   });
-
-  // Aggregate all spend files by month
   const spendByMonth={};
   spendFiles.forEach((sf,idx)=>{
-    if(!sf||!sf.rows)return;
-    const sm2=getMapperValues(`spendMapper${idx}`);
-    if(!sm2.date||!sm2.spend)return;
+    if(!sf?.rows)return;
+    const sm2=getMapper(`spendMapper${idx}`);if(!sm2.date||!sm2.spend)return;
     sf.rows.forEach(r=>{
-      const mo=parseMonth(r[sm2.date]);
-      if(!mo)return;
+      const mo=parseMonth(r[sm2.date]);if(!mo)return;
       const s=parseFloat(String(r[sm2.spend]).replace(/[,$]/g,''))||0;
       spendByMonth[mo]=(spendByMonth[mo]||0)+s;
     });
   });
-
-  // Build CAC series on months where we have both
   const months=[...new Set([...Object.keys(custByMonth),...Object.keys(spendByMonth)])].sort();
-  cacSeries=months.map(mo=>{
+  let cumCust=0;
+  const series=months.map(mo=>{
     const cust=custByMonth[mo]||0;
     const spend=spendByMonth[mo]||0;
+    cumCust+=cust;
     const cac=cust>0?spend/cust:null;
-    return{month:mo,cust,spend,cac};
+    return{month:mo,monthlyCust:cust,cumCust,spend,cac};
   }).filter(d=>d.cac!==null);
-
-  if(!cacSeries.length){alert('No overlapping months found between files.');cacSeries=null;return;}
-
-  document.getElementById('clearCacBtn').style.display='block';
-  document.getElementById('cacChartCard').style.display='block';
+  if(!series.length){alert('No overlapping months found.');return;}
+  cacSeries=series;
+  localStorage.setItem('doi_cac',JSON.stringify(cacSeries));
+  document.getElementById('clearBtn').style.display='block';
+  document.getElementById('cacCard').style.display='block';
   renderCacChart();
-  renderDoiChart();
+  render();
+};
+
+document.getElementById('clearBtn').onclick=()=>{
+  cacSeries=null;localStorage.removeItem('doi_cac');
+  document.getElementById('cacCard').style.display='none';
+  document.getElementById('clearBtn').style.display='none';
+  if(cacChart){cacChart.destroy();cacChart=null;}
+};
+
+// ── CHART TOGGLE CONTROLS ──────────────────────────────────────────────────
+function setChartType(t){
+  chartType=t;
+  document.getElementById('btnLine').classList.toggle('active',t==='line');
+  document.getElementById('btnBar').classList.toggle('active',t==='bar');
+  renderCacChart();
+}
+function setChartGranularity(g){
+  chartGran=g;
+  document.getElementById('btnMonthly').classList.toggle('active',g==='monthly');
+  document.getElementById('btnAnnual').classList.toggle('active',g==='annual');
+  renderCacChart();
 }
 
-// ============ DOI CHART ============
+// ── DOI CHART ──────────────────────────────────────────────────────────────
 const N=80;
 const xVals=Array.from({length:N+1},(_,i)=>i/N);
 const sCurve=xVals.map(cumForFrac);
-
 const barData=[];
 let cs=0;
 SEGMENTS.forEach(seg=>{
   const fS=fracForCum(cs),fE=fracForCum(seg.cumEnd);
-  barData.push({cx:(fS+fE)/2,halfW:(fE-fS)/2-0.004,h:seg.pct,label:seg.label,pct:seg.pct,color:seg.color});
+  barData.push({cx:(fS+fE)/2,halfW:(fE-fS)/2-0.004,h:seg.pct,label:seg.label,color:seg.color});
   cs=seg.cumEnd;
 });
-
 const bellPlugin={
   id:'bell',
-  beforeDatasetsDraw(chart){
+  beforeDraw(chart){
     const{ctx,scales:{x,y2}}=chart;
     barData.forEach(b=>{
       const cx=x.getPixelForValue(b.cx);
       const hw=Math.abs(x.getPixelForValue(b.cx+b.halfW)-x.getPixelForValue(b.cx-b.halfW))/2;
       const yT=y2.getPixelForValue(b.h),yB=y2.getPixelForValue(0);
-      ctx.save();ctx.fillStyle=b.color+'cc';
-      ctx.fillRect(cx-hw,yT,hw*2,yB-yT);
-      if(yB-yT>22){
-        ctx.fillStyle='rgba(255,255,255,0.85)';
-        ctx.font='500 11px Inter,system-ui';ctx.textAlign='center';
-        ctx.fillText(b.pct+'%',cx,yT+14);
-      }
+      ctx.save();ctx.fillStyle=b.color+'cc';ctx.fillRect(cx-hw,yT,hw*2,yB-yT);
+      if(yB-yT>22){ctx.fillStyle='rgba(255,255,255,0.85)';ctx.font='500 11px Inter,system-ui';ctx.textAlign='center';ctx.fillText(b.h+'%',cx,yT+14);}
       ctx.restore();
     });
   },
   afterDatasetsDraw(chart){
     const{ctx,scales:{x,y2}}=chart;
     barData.forEach(b=>{
-      const cx=x.getPixelForValue(b.cx);
-      const yB=y2.getPixelForValue(0);
-      ctx.save();ctx.fillStyle='#898781';
-      ctx.font='11px Inter,system-ui';ctx.textAlign='center';
-      ctx.fillText(b.label,cx,yB+26);ctx.restore();
+      const cx=x.getPixelForValue(b.cx);const yB=y2.getPixelForValue(0);
+      ctx.save();ctx.fillStyle='#898781';ctx.font='11px Inter,system-ui';ctx.textAlign='center';ctx.fillText(b.label,cx,yB+26);ctx.restore();
     });
   }
 };
 
 function getActiveMetrics(){
-  const pool=parseFloat(state.pool);
-  if(!pool||pool<=0)return[];
-  return state.metrics.map((m,i)=>({
-    ...m,idx:i,color:COLORS[i],
-    numVal:parseFloat(m.value)||0,
-    cumPct:m.value&&parseFloat(m.value)>0?Math.min((parseFloat(m.value)/pool)*100,100):0,
-  })).filter(m=>m.name&&m.numVal>0&&m.active);
+  const pool=parseFloat(state.pool);if(!pool||pool<=0)return[];
+  return state.metrics.map((m,i)=>({...m,idx:i,color:COLORS[i],numVal:parseFloat(m.value)||0,cumPct:m.value&&parseFloat(m.value)>0?Math.min((parseFloat(m.value)/pool)*100,100):0})).filter(m=>m.name&&m.numVal>0&&m.active);
 }
 
 let doiChart;
 function renderDoiChart(){
   const canvas=document.getElementById('doiCanvas');
   const metrics=getActiveMetrics();
-
-  const ds=[{
-    label:'Cumulative adoption ≈ rising CAC',
-    data:xVals.map((x,i)=>({x,y:sCurve[i]})),
-    borderColor:'#2a78d6',borderWidth:2,
-    pointRadius:0,pointHoverRadius:0,tension:0,
-    type:'line',yAxisID:'y',order:10,
-  }];
-
+  const ds=[{label:'S-curve',data:xVals.map((x,i)=>({x,y:sCurve[i]})),borderColor:'#2a78d6',borderWidth:2,pointRadius:0,pointHoverRadius:0,tension:0,type:'line',yAxisID:'y',order:10}];
   metrics.forEach(m=>{
     const fx=fracForCum(m.cumPct);
-    ds.push({
-      label:m.name,
-      data:[{x:fx,y:0},{x:fx,y:m.cumPct}],
-      borderColor:m.color,borderWidth:1.5,borderDash:[4,3],
-      pointRadius:[0,7],pointHoverRadius:[0,7],
-      pointBackgroundColor:m.color,
-      pointBorderColor:'#ffffff',pointBorderWidth:2.5,
-      type:'line',yAxisID:'y',tension:0,order:5,
-    });
+    ds.push({label:m.name,data:[{x:fx,y:0},{x:fx,y:m.cumPct}],borderColor:m.color,borderWidth:1.5,borderDash:[4,3],pointRadius:[0,7],pointHoverRadius:[0,7],pointBackgroundColor:m.color,pointBorderColor:'#fff',pointBorderWidth:2.5,type:'line',yAxisID:'y',tension:0,order:5});
   });
-
   if(doiChart)doiChart.destroy();
-  doiChart=new Chart(canvas,{
-    type:'line',plugins:[bellPlugin],
-    data:{datasets:ds},
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      animation:{duration:250},
-      elements:{point:{radius:0,hoverRadius:0}},
-      plugins:{legend:{display:false},tooltip:{enabled:false}},
-      scales:{
-        x:{type:'linear',min:0,max:1,grid:{color:'rgba(0,0,0,0.04)'},ticks:{display:false},border:{color:'rgba(0,0,0,0.06)'}},
-        y:{type:'linear',min:0,max:100,position:'left',
-          grid:{color:'rgba(0,0,0,0.04)'},
-          ticks:{color:'#898781',font:{size:11},callback:v=>v+'%',maxTicksLimit:6},
-          title:{display:true,text:'Cumulative adoption',color:'#898781',font:{size:11}},
-          border:{color:'rgba(0,0,0,0.06)'}},
-        y2:{type:'linear',min:0,max:38,position:'right',display:false,grid:{drawOnChartArea:false}},
-      },
-      layout:{padding:{bottom:40,top:16,left:4,right:4}},
-    },
-  });
-
-  // Tooltip
+  doiChart=new Chart(canvas,{type:'line',plugins:[bellPlugin],data:{datasets:ds},options:{responsive:true,maintainAspectRatio:false,animation:{duration:250},elements:{point:{radius:0,hoverRadius:0}},plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{type:'linear',min:0,max:1,grid:{color:'rgba(0,0,0,0.04)'},ticks:{display:false},border:{color:'rgba(0,0,0,0.06)'}},y:{type:'linear',min:0,max:100,position:'left',grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#898781',font:{size:11},callback:v=>v+'%',maxTicksLimit:6},title:{display:true,text:'Cumulative adoption',color:'#898781',font:{size:11}},border:{color:'rgba(0,0,0,0.06)'}},y2:{type:'linear',min:0,max:38,position:'right',display:false,grid:{drawOnChartArea:false}}},layout:{padding:{bottom:40,top:16,left:4,right:4}}}});
   const tip=document.getElementById('doiTooltip');
   canvas.onmousemove=e=>{
-    const rect=canvas.getBoundingClientRect();
-    const mx=e.clientX-rect.left,my=e.clientY-rect.top;
+    const rect=canvas.getBoundingClientRect();const mx=e.clientX-rect.left,my=e.clientY-rect.top;
     let closest=null,closestDist=Infinity;
-    metrics.forEach(m=>{
-      const fx=fracForCum(m.cumPct);
-      const px=doiChart.scales.x.getPixelForValue(fx);
-      const d=Math.abs(mx-px);
-      if(d<closestDist&&d<50){closestDist=d;closest=m;}
-    });
-    if(closest){
-      const pool=parseFloat(state.pool);
-      tip.style.opacity='1';
-      tip.innerHTML=`<strong style="color:${closest.color}">${closest.name}</strong><br>${fmt(closest.numVal)} of ${fmt(pool)}<br>${closest.cumPct.toFixed(1)}% cumulative adoption<br><span style="color:#898781">${segFor(closest.cumPct)}</span>`;
-      let tx=mx+14;if(tx+210>rect.width)tx=mx-220;
-      tip.style.left=tx+'px';tip.style.top=Math.max(0,my-30)+'px';
-    }else tip.style.opacity='0';
+    metrics.forEach(m=>{const fx=fracForCum(m.cumPct);const px=doiChart.scales.x.getPixelForValue(fx);const d=Math.abs(mx-px);if(d<closestDist&&d<50){closestDist=d;closest=m;}});
+    if(closest){tip.style.opacity='1';tip.innerHTML=`<strong style="color:${closest.color}">${closest.name}</strong><br>${fmt(closest.numVal)} of ${fmt(parseFloat(state.pool))}<br>${closest.cumPct.toFixed(1)}% cumulative adoption<br><span style="color:#898781">${segFor(closest.cumPct)}</span>`;let tx=mx+14;if(tx+210>rect.width)tx=mx-220;tip.style.left=tx+'px';tip.style.top=Math.max(0,my-30)+'px';}
+    else tip.style.opacity='0';
   };
   canvas.onmouseleave=()=>tip.style.opacity='0';
-
-  // Legend
   const leg=document.getElementById('doiLegend');
-  leg.innerHTML=`
-    <div class="legend-item"><div class="legend-line" style="background:#b4b2a9;height:8px;border-radius:2px;width:16px;"></div>Population distribution</div>
-    <div class="legend-item"><div class="legend-line" style="background:#2a78d6;"></div>Cumulative adoption ≈ rising CAC</div>
-    ${metrics.map(m=>`<div class="legend-item"><div class="legend-dash" style="border-top-color:${m.color};"></div>${m.name}</div>`).join('')}
-  `;
+  leg.innerHTML=`<div class="legend-item"><div class="legend-line" style="background:#b4b2a9;height:8px;border-radius:2px;width:16px;"></div>Population distribution</div><div class="legend-item"><div class="legend-line" style="background:#2a78d6;"></div>Cumulative adoption</div>${metrics.map(m=>`<div class="legend-item"><div class="legend-dash" style="border-top-color:${m.color};"></div>${m.name}</div>`).join('')}`;
 }
 
-// ============ CAC CHART ============
+// ── CAC ON ROGERS CHART ────────────────────────────────────────────────────
 let cacChart;
+
+function getAnnualData(series,pool){
+  const byYear={};
+  series.forEach(d=>{
+    const yr=d.month.slice(0,4);
+    if(!byYear[yr])byYear[yr]={spendSum:0,custSum:0,cumCustEnd:0};
+    byYear[yr].spendSum+=d.spend||0;
+    byYear[yr].custSum+=d.monthlyCust||0;
+    byYear[yr].cumCustEnd=d.cumCust;
+  });
+  return Object.entries(byYear).map(([yr,d])=>({
+    label:yr,
+    cumCust:d.cumCustEnd,
+    cac:d.custSum>0?d.spendSum/d.custSum:null,
+    cumPct:d.cumCustEnd/pool*100,
+    x:fracForCum(d.cumCustEnd/pool*100),
+  })).filter(d=>d.cac!==null);
+}
+
+function rollingAvg(arr,k=3){return arr.map((v,i)=>{const sl=arr.slice(Math.max(0,i-k+1),i+1).filter(x=>x!==null);return sl.reduce((a,b)=>a+b,0)/sl.length;});}
+
+// Segment background plugin for CAC chart
+function makeRogersSegPlugin(segs){
+  return{id:'rogSegs',beforeDraw(chart){
+    const{ctx,chartArea:{top,bottom},scales:{x}}=chart;
+    let prev=0;
+    segs.forEach(seg=>{
+      const fEnd=fracForCum(seg.cumEnd);
+      const px1=x.getPixelForValue(prev);
+      const px2=x.getPixelForValue(fEnd);
+      if(px2>px1){
+        ctx.save();ctx.fillStyle=seg.color+'44';ctx.fillRect(px1,top,px2-px1,bottom-top);
+        ctx.fillStyle='rgba(0,0,0,0.32)';ctx.font='500 11px Inter,system-ui';ctx.textAlign='center';
+        ctx.fillText(seg.label,(px1+px2)/2,bottom+28);ctx.restore();
+      }
+      prev=fEnd;
+    });
+  }};
+}
+
 function renderCacChart(){
   if(!cacSeries||!cacSeries.length)return;
+  const pool=parseFloat(state.pool)||7500000;
   const canvas=document.getElementById('cacCanvas');
-  if(cacChart)cacChart.destroy();
+  if(cacChart){cacChart.destroy();cacChart=null;}
 
-  const labels=cacSeries.map(d=>d.month);
-  const cacs=cacSeries.map(d=>d.cac?+d.cac.toFixed(2):null);
-  const avgCAC=cacs.filter(Boolean).reduce((a,b)=>a+b,0)/cacs.filter(Boolean).length;
+  const isAnnual=chartGran==='annual';
+  const isBar=chartType==='bar';
 
-  cacChart=new Chart(canvas,{
-    type:'line',
-    data:{
-      labels,
-      datasets:[{
-        label:'Blended CAC',
-        data:cacs,
-        borderColor:'#e34948',borderWidth:2,
-        pointRadius:3,pointHoverRadius:5,
-        pointBackgroundColor:'#e34948',
-        tension:0.3,fill:false,
-        spanGaps:true,
-      },{
-        label:'Average',
-        data:cacs.map(()=>+avgCAC.toFixed(2)),
-        borderColor:'#b4b2a9',borderWidth:1,
-        borderDash:[4,3],pointRadius:0,
-        tension:0,fill:false,
-      }]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{
-        legend:{display:false},
-        tooltip:{
-          callbacks:{
-            label:ctx=>`${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}`
-          }
-        }
-      },
-      scales:{
-        x:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#898781',font:{size:11},maxTicksLimit:12}},
-        y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#898781',font:{size:11},callback:v=>'$'+v},
-          title:{display:true,text:'Blended CAC',color:'#898781',font:{size:11}}},
-      },
-      layout:{padding:{top:8}},
-    },
-  });
+  // Build S-curve theoretical line
+  const maxX=isAnnual?0.18:0.15;
+  const maxCAC=isAnnual?
+    Math.max(...getAnnualData(cacSeries,pool).map(d=>d.cac))*1.3:
+    Math.max(...cacSeries.map(d=>d.cac).filter(Boolean))*1.3;
+  const sCurvePts=[];
+  for(let i=0;i<=80;i++){const f=(i/80)*maxX*1.4;const c=cumForFrac(f);sCurvePts.push({x:f,y:(c/100)*maxCAC});}
+
+  const rogPlugin=makeRogersSegPlugin(SEGMENTS);
+  const gridCol='rgba(0,0,0,0.04)';
+  const textMuted='#898781';
+
+  if(isAnnual){
+    const annData=getAnnualData(cacSeries,pool);
+
+    if(isBar){
+      // Custom bar plugin
+      const barPlugin={id:'annBars',afterDraw(chart){
+        const{ctx,chartArea:{bottom},scales:{x,y}}=chart;
+        const bw=(x.getPixelForValue(0.012)-x.getPixelForValue(0));
+        annData.forEach(d=>{
+          const cx=x.getPixelForValue(d.x);
+          const top2=y.getPixelForValue(d.cac);
+          const bot=y.getPixelForValue(0);
+          const h=bot-top2;
+          ctx.save();
+          const r=Math.min(4,bw*0.35);
+          ctx.fillStyle='#2a78d6';
+          ctx.beginPath();
+          ctx.moveTo(cx-bw,bot);ctx.lineTo(cx-bw,top2+r);ctx.quadraticCurveTo(cx-bw,top2,cx-bw+r,top2);
+          ctx.lineTo(cx+bw-r,top2);ctx.quadraticCurveTo(cx+bw,top2,cx+bw,top2+r);ctx.lineTo(cx+bw,bot);ctx.closePath();ctx.fill();
+          ctx.fillStyle='#2a78d6';ctx.font='500 11px Inter,system-ui';ctx.textAlign='center';ctx.fillText(d.label,cx,top2-7);
+          if(h>20){ctx.fillStyle='#fff';ctx.fillText('$'+d.cac.toFixed(0),cx,top2+16);}
+          ctx.restore();
+        });
+      }};
+      cacChart=new Chart(canvas,{type:'scatter',plugins:[rogPlugin,barPlugin],data:{datasets:[{label:'Theoretical',type:'line',data:sCurvePts,borderColor:'#e34948',borderWidth:1.5,borderDash:[5,3],pointRadius:0,fill:false,tension:0,order:3},{label:'placeholder',data:[],order:99}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{type:'linear',min:0,max:maxX*1.1,grid:{color:gridCol},ticks:{display:false},border:{color:gridCol}},y:{type:'linear',min:0,grid:{color:gridCol},ticks:{color:textMuted,font:{size:11},callback:v=>'$'+v},title:{display:true,text:'Avg blended CAC',color:textMuted,font:{size:11}},border:{color:gridCol}}},layout:{padding:{bottom:42,top:20,left:4,right:16}}}});
+    } else {
+      // Annual line
+      cacChart=new Chart(canvas,{type:'scatter',plugins:[rogPlugin],data:{datasets:[{label:'Theoretical',type:'line',data:sCurvePts,borderColor:'#e34948',borderWidth:1.5,borderDash:[5,3],pointRadius:0,fill:false,tension:0,order:3},{label:'Annual avg CAC',type:'line',data:annData.map(d=>({x:d.x,y:d.cac,label:d.label,cumPct:d.cumPct.toFixed(1)})),borderColor:'#2a78d6',borderWidth:2.5,pointRadius:6,pointHoverRadius:8,pointBackgroundColor:'#2a78d6',pointBorderColor:'#fff',pointBorderWidth:2,fill:false,tension:0.25,order:1}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{filter:i=>i.datasetIndex===1,callbacks:{title:ctx=>ctx[0]?.raw?.label||'',label:ctx=>[`CAC: $${ctx.parsed.y.toFixed(2)}`,`Adoption: ${ctx.raw?.cumPct}% of pool`]}}},scales:{x:{type:'linear',min:0,max:maxX*1.1,grid:{color:gridCol},ticks:{display:false},border:{color:gridCol}},y:{type:'linear',min:0,grid:{color:gridCol},ticks:{color:textMuted,font:{size:11},callback:v=>'$'+v},title:{display:true,text:'Avg blended CAC',color:textMuted,font:{size:11}},border:{color:gridCol}}},layout:{padding:{bottom:42,top:20,left:4,right:16}}}});
+    }
+  } else {
+    // Monthly
+    const cacs=cacSeries.map(d=>d.cac);
+    const smooth=rollingAvg(cacs,3);
+    const monthlyPts=cacSeries.map((d,i)=>({x:fracForCum(d.cumCust/pool*100),y:parseFloat(smooth[i].toFixed(2)),label:d.month,cumPct:(d.cumCust/pool*100).toFixed(2)}));
+
+    if(isBar){
+      const barPlugin2={id:'monBars',afterDraw(chart){
+        const{ctx,chartArea:{bottom},scales:{x,y}}=chart;
+        const bw=Math.max(2,(x.getPixelForValue(0.004)-x.getPixelForValue(0)));
+        monthlyPts.forEach(d=>{
+          const cx=x.getPixelForValue(d.x);const t=y.getPixelForValue(d.y);const bot=y.getPixelForValue(0);
+          ctx.save();ctx.fillStyle='rgba(42,120,214,0.7)';ctx.fillRect(cx-bw/2,t,bw,bot-t);ctx.restore();
+        });
+      }};
+      cacChart=new Chart(canvas,{type:'scatter',plugins:[rogPlugin,barPlugin2],data:{datasets:[{label:'Theoretical',type:'line',data:sCurvePts,borderColor:'#e34948',borderWidth:1.5,borderDash:[5,3],pointRadius:0,fill:false,tension:0,order:3},{label:'p',data:[],order:99}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{type:'linear',min:0,max:maxX*1.1,grid:{color:gridCol},ticks:{display:false},border:{color:gridCol}},y:{type:'linear',min:0,grid:{color:gridCol},ticks:{color:textMuted,font:{size:11},callback:v=>'$'+v},title:{display:true,text:'Blended CAC (3-mo avg)',color:textMuted,font:{size:11}},border:{color:gridCol}}},layout:{padding:{bottom:42,top:16,left:4,right:16}}}});
+    } else {
+      cacChart=new Chart(canvas,{type:'scatter',plugins:[rogPlugin],data:{datasets:[{label:'Theoretical',type:'line',data:sCurvePts,borderColor:'#e34948',borderWidth:1.5,borderDash:[5,3],pointRadius:0,fill:false,tension:0,order:3},{label:'Monthly CAC',type:'line',data:monthlyPts,borderColor:'#2a78d6',borderWidth:2.5,pointRadius:0,pointHoverRadius:5,fill:false,tension:0.3,order:1}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{mode:'nearest',intersect:false,filter:i=>i.datasetIndex===1,callbacks:{title:ctx=>ctx[0]?.raw?.label||'',label:ctx=>[`CAC (3-mo avg): $${ctx.parsed.y.toFixed(2)}`,`Adoption: ${ctx.raw?.cumPct}% of pool`]}}},scales:{x:{type:'linear',min:0,max:maxX*1.1,grid:{color:gridCol},ticks:{display:false},border:{color:gridCol}},y:{type:'linear',min:0,grid:{color:gridCol},ticks:{color:textMuted,font:{size:11},callback:v=>'$'+v},title:{display:true,text:'Blended CAC (3-mo avg)',color:textMuted,font:{size:11}},border:{color:gridCol}}},layout:{padding:{bottom:42,top:16,left:4,right:16}}}});
+    }
+  }
 }
 
-// ============ RENDER ============
+// ── RENDER ─────────────────────────────────────────────────────────────────
 function render(){
   const pool=parseFloat(state.pool);
   const poolLabel=state.poolLabel||'potential customer pool';
   const metrics=getActiveMetrics();
-
-  document.getElementById('pageSubtitle').textContent=pool>0
-    ?`${fmt(pool)} ${poolLabel}`
-    :'Configure your potential customer pool in the settings panel';
-
-  // Stat cards
-  const grid=document.getElementById('statsGrid');
-  grid.innerHTML='';
-  if(pool>0){
-    const c=document.createElement('div');
-    c.className='stat-card';
-    c.innerHTML=`<div class="stat-card-label">Potential customer pool</div><div class="stat-card-value">${fmt(pool)}</div><div class="stat-card-sub">${poolLabel}</div>`;
+  document.getElementById('pageSubtitle').textContent=pool>0?`${fmt(pool)} ${poolLabel}`:'Configure your potential customer pool in the settings panel';
+  const grid=document.getElementById('statsGrid');grid.innerHTML='';
+  if(pool>0){const c=document.createElement('div');c.className='stat-card';c.innerHTML=`<div class="stat-card-label">Potential customer pool</div><div class="stat-card-value">${fmt(pool)}</div><div class="stat-card-sub">${poolLabel}</div>`;grid.appendChild(c);}
+  metrics.forEach(m=>{const seg=segFor(m.cumPct);const ss=SEG_STYLES[seg]||{bg:'#f1efe8',text:'#5f5e5a'};const c=document.createElement('div');c.className='stat-card';c.innerHTML=`<div class="stat-card-label"><span class="stat-card-dot" style="background:${m.color}"></span>${m.name}</div><div class="stat-card-value">${fmt(m.numVal)}</div><div class="stat-card-sub">${m.cumPct.toFixed(1)}% of pool</div><span class="seg-badge" style="background:${ss.bg};color:${ss.text}">${seg}</span>`;grid.appendChild(c);});
+  if(cacSeries?.length){
+    const latest=cacSeries[cacSeries.length-1];const first=cacSeries[0];
+    const trend=latest.cac>first.cac?'↑':'↓';const tCol=latest.cac>first.cac?'#e34948':'#1baf7a';
+    const c=document.createElement('div');c.className='stat-card';
+    c.innerHTML=`<div class="stat-card-label"><span class="stat-card-dot" style="background:#e34948"></span>Blended CAC (latest)</div><div class="stat-card-value">$${latest.cac.toFixed(2)}</div><div class="stat-card-sub" style="color:${tCol}">${trend} from $${first.cac.toFixed(2)} (${first.month})</div>`;
     grid.appendChild(c);
+    document.getElementById('cacCard').style.display='block';
+    document.getElementById('clearBtn').style.display='block';
+    renderCacChart();
   }
-  metrics.forEach(m=>{
-    const seg=segFor(m.cumPct);
-    const ss=SEG_STYLES[seg]||{bg:'#f1efe8',text:'#5f5e5a'};
-    const c=document.createElement('div');
-    c.className='stat-card';
-    c.innerHTML=`
-      <div class="stat-card-label"><span class="stat-card-dot" style="background:${m.color}"></span>${m.name}</div>
-      <div class="stat-card-value">${fmt(m.numVal)}</div>
-      <div class="stat-card-sub">${m.cumPct.toFixed(1)}% of pool</div>
-      <span class="seg-badge" style="background:${ss.bg};color:${ss.text}">${seg}</span>`;
-    grid.appendChild(c);
-  });
-
-  if(cacSeries&&cacSeries.length){
-    const latest=cacSeries[cacSeries.length-1];
-    const first=cacSeries[0];
-    const c=document.createElement('div');
-    c.className='stat-card';
-    const trend=latest.cac>first.cac?'↑':'↓';
-    const tColor=latest.cac>first.cac?'#e34948':'#1baf7a';
-    c.innerHTML=`
-      <div class="stat-card-label"><span class="stat-card-dot" style="background:#e34948"></span>Blended CAC (latest)</div>
-      <div class="stat-card-value">${fmtCAC(latest.cac)}</div>
-      <div class="stat-card-sub" style="color:${tColor}">${trend} from ${fmtCAC(first.cac)} (${first.month})</div>`;
-    grid.appendChild(c);
-  }
-
-  // Rogers table
-  const tbody=document.getElementById('rogersTable');
-  tbody.innerHTML='';
-  SEGMENTS.forEach(seg=>{
-    const cumStart=seg.cumEnd-seg.pct;
-    const ss=SEG_STYLES[seg.label]||{bg:'#f1efe8',text:'#5f5e5a'};
-    const myMetrics=metrics.filter(m=>segFor(m.cumPct)===seg.label);
-    const dots=myMetrics.map(m=>`<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${m.color};margin-right:3px;vertical-align:middle;"></span>`).join('');
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td><span class="seg-badge" style="background:${ss.bg};color:${ss.text}">${seg.label}</span>${dots?'<span style="margin-left:6px;">'+dots+'</span>':''}</td>
-      <td style="color:#0b0b0b;font-weight:500;">${seg.pct}%</td>
-      <td style="color:#52514e;">${cumStart.toFixed(0)}–${seg.cumEnd}%</td>
-      <td><div class="seg-bar" style="background:${seg.color};width:${seg.pct*2.2}px;"></div></td>`;
-    tbody.appendChild(tr);
-  });
-
+  const tbody=document.getElementById('rogersTable');tbody.innerHTML='';
+  SEGMENTS.forEach(seg=>{const cumStart=seg.cumEnd-seg.pct;const ss=SEG_STYLES[seg.label]||{bg:'#f1efe8',text:'#5f5e5a'};const myMetrics=metrics.filter(m=>segFor(m.cumPct)===seg.label);const dots=myMetrics.map(m=>`<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${m.color};margin-right:3px;vertical-align:middle;"></span>`).join('');const tr=document.createElement('tr');tr.innerHTML=`<td><span class="seg-badge" style="background:${ss.bg};color:${ss.text}">${seg.label}</span>${dots?'<span style="margin-left:6px;">'+dots+'</span>':''}</td><td style="color:#0b0b0b;font-weight:500;">${seg.pct}%</td><td style="color:#52514e;">${cumStart.toFixed(0)}–${seg.cumEnd}%</td><td><div class="seg-bar" style="background:${seg.color};width:${seg.pct*2.2}px;"></div></td>`;tbody.appendChild(tr);});
   renderDoiChart();
 }
 
